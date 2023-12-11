@@ -51,7 +51,7 @@ Welcome to my documentation site.
 
 ## Generate HTML
 
-Run `malta`, and your HTML files will be generated in a `dist` directory.
+Run `malta`, and your HTML files will be generated in the `dist` directory.
 
 ```
 malta

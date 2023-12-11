@@ -84,7 +84,7 @@ main li {
 }
 
 main .chroma,
-main .pre {
+main > pre {
     font-size-adjust: from-font;
     margin-top: 1rem;
     margin-bottom: 0;
