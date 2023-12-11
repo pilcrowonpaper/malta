@@ -20,11 +20,11 @@ jobs:
           registry-url: https://registry.npmjs.org
       - name: install malta
         run: |
-          curl -o malta.tgz -L https://github.com/pilcrowonpaper/malta/releases/latest/download/linux-amd64.tgz
-          tar -xvzf malta.tgz
+          curl -o /malta.tgz -L https://github.com/pilcrowonpaper/malta/releases/latest/download/linux-amd64.tgz
+          tar -xvzf /malta.tgz
       - name: build
         working-directory: docs
-        run: linux-amd64/malta
+        run: /linux-amd64/malta
       - name: install wrangler
         run: npm i -g wrangler
       - name: deploy
