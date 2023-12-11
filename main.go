@@ -1,4 +1,4 @@
-package malta
+package main
 
 import (
 	"bytes"
@@ -29,7 +29,7 @@ var mainCss []byte
 var markdownCss []byte
 
 func main() {
-	configJson, _ := os.ReadFile("config.json")
+	configJson, _ := os.ReadFile("malta.config.json")
 	json.Unmarshal(configJson, &config)
 
 	navSections := []NavSection{}

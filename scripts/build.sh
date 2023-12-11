@@ -1,3 +1,5 @@
+rm -rf bin
+
 echo 'building bin/darwin-amd64/malta'
 GOOS=darwin GOARCH=amd64 go build -o bin/darwin-amd64/malta
 echo 'building bin/darwin-arm64/malta'
