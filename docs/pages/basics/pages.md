@@ -48,7 +48,7 @@ title: "Malta documentation"
 
 You can add links to variables inside code blocks by defining a key-value by prefixing it with `//$`, and prefixing the target variable with `$$`. Both the comments and `$$` will be removed when rendered.
 
-````md
+````
 ```ts
 //$ Message=/reference
 const message: $$Message = {
