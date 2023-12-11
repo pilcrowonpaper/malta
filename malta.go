@@ -1,4 +1,4 @@
-package malta
+package main
 
 import (
 	"bytes"
