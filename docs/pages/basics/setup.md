@@ -20,7 +20,7 @@ install <platform>-<arch>/malta /usr/local/bin
 
 ## Create a config file
 
-Create a `malta.config.json`
+Create `malta.config.json` in the project root.
 
 ```json
 {
