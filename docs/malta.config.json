@@ -1,0 +1,15 @@
+{
+  "name": "Malta",
+  "description": "Malta is a CLI tool to generate documentation sites with markdown.",
+  "domain": "https://example.com",
+  "sidebar": [
+    {
+      "title": "Basics",
+      "pages": [
+        ["Getting started", "/basics/setup"],
+        ["Writing pages", "/basics/pages"],
+        ["Configuring the sidebar", "/basics/sidebar"]
+      ]
+    }
+  ]
+}

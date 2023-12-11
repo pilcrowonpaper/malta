@@ -55,6 +55,14 @@ main>ul {
     padding-left: 0;
 }
 
+main>ol {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    list-style-type: decimal;
+    list-style-position: inside;
+    padding-left: 0;
+}
+
 main ul>li>ul {
     margin-top: 0;
     margin-bottom: 0;
@@ -63,11 +71,20 @@ main ul>li>ul {
     list-style-position: inside;
 }
 
+main ol>li>ol {
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 1.5rem;
+    list-style-type: decimal;
+    list-style-position: inside;
+}
+
 main li {
     margin-bottom: 0.125rem;
 }
 
-.chroma {
+main .chroma,
+main .pre {
     font-size-adjust: from-font;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -79,11 +96,14 @@ main li {
     overflow: auto;
 }
 
-.chroma .c, .chroma .c1 {
+.chroma .c,
+.chroma .c1 {
     color: rgb(124, 124, 124);
 }
 
-.chroma .s, .chroma .s1, .chroma .s2 {
+.chroma .s,
+.chroma .s1,
+.chroma .s2 {
     color: rgb(228, 69, 58);
 }
 

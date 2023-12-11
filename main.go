@@ -4,6 +4,8 @@ import (
 	"bytes"
 	_ "embed"
 	"encoding/json"
+	"errors"
+	"fmt"
 	"html/template"
 	"os"
 	"path/filepath"
@@ -16,7 +18,13 @@ import (
 	"github.com/yuin/goldmark/parser"
 )
 
-var config Config
+var config struct {
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
+	Domain      string                 `json:"domain"`
+	Twitter     string                 `json:"twitter"`
+	Sidebar     []SidebarSectionConfig `json:"sidebar"`
+}
 var markdownFilePaths []string
 
 //go:embed assets/template.html
@@ -29,8 +37,28 @@ var mainCss []byte
 var markdownCss []byte
 
 func main() {
-	configJson, _ := os.ReadFile("malta.config.json")
+	configJson, err := os.ReadFile("malta.config.json")
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			fmt.Println("Missing 'malta.config.json'")
+			return
+		}
+		panic(err)
+	}
+
 	json.Unmarshal(configJson, &config)
+	if config.Name == "" {
+		fmt.Println("Missing config: name")
+		return
+	}
+	if config.Domain == "" {
+		fmt.Println("Missing config: domain")
+		return
+	}
+	if config.Description == "" {
+		fmt.Println("Missing config: description")
+		return
+	}
 
 	navSections := []NavSection{}
 	for _, sidebarSection := range config.Sidebar {
@@ -62,6 +90,10 @@ func main() {
 		markdownFile, _ := os.Open(markdownFilePath)
 		defer markdownFile.Close()
 		pageMarkdown, _ := frontmatter.MustParse(markdownFile, &matter)
+		if matter.Title == "" {
+			fmt.Printf("Page %s missing attribute: title\n", markdownFilePath)
+			return
+		}
 
 		var markdownHtmlBuf bytes.Buffer
 
@@ -103,6 +135,17 @@ func main() {
 	os.WriteFile("dist/markdown.css", markdownCss, os.ModePerm)
 }
 
+func walkPagesDir(path string, info os.FileInfo, err error) error {
+	if err != nil {
+		return err
+	}
+	if info.IsDir() {
+		return nil
+	}
+	markdownFilePaths = append(markdownFilePaths, path)
+	return nil
+}
+
 type Data struct {
 	Markdown    template.HTML
 	Title       string
@@ -123,26 +166,7 @@ type NavPage struct {
 	Href  string
 }
 
-type Config struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Domain      string                 `json:"domain"`
-	Twitter     string                 `json:"twitter"`
-	Sidebar     []SidebarSectionConfig `json:"sidebar"`
-}
-
 type SidebarSectionConfig struct {
 	Title string     `json:"title"`
 	Pages [][]string `json:"pages"`
-}
-
-func walkPagesDir(path string, info os.FileInfo, err error) error {
-	if err != nil {
-		return err
-	}
-	if info.IsDir() {
-		return nil
-	}
-	markdownFilePaths = append(markdownFilePaths, path)
-	return nil
 }

@@ -7,7 +7,9 @@
     <meta name="description" content="{{.Description}}" />
 
     <meta name="twitter:card" content="summary" />
+    {{if ne .Twitter ""}}
     <meta name="twitter:site" content="{{.Twitter}}" />
+    {{end}}
     <meta name="twitter:title" content="{{.Title}}" />
     <meta name="twitter:description" content="{{.Description}}" />
     <!-- <meta property="og:image" content="" /> -->
@@ -17,8 +19,8 @@
     <meta property="og:url" content="{{.Url}}" />
     <meta property="og:description" content="{{.Description}}" />
 
-    <link rel="stylesheet" href="main.css" />
-    <link rel="stylesheet" href="markdown.css" />
+    <link rel="stylesheet" href="/main.css" />
+    <link rel="stylesheet" href="/markdown.css" />
   </head>
   <body>
     <div id="mobile-top">
