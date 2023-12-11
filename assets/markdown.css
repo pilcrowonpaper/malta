@@ -83,8 +83,7 @@ main li {
     margin-bottom: 0.125rem;
 }
 
-main .chroma,
-main > pre {
+main .codeblock {
     font-size-adjust: from-font;
     margin-top: 1rem;
     margin-bottom: 0;
@@ -96,17 +95,18 @@ main > pre {
     overflow: auto;
 }
 
-.chroma .c,
-.chroma .c1 {
+main .codeblock a {
+    all: inherit;
+    text-decoration: underline;
+}
+
+.codeblock .c,
+.codeblock .c1 {
     color: rgb(124, 124, 124);
 }
 
-.chroma .s,
-.chroma .s1,
-.chroma .s2 {
+.codeblock .s,
+.codeblock .s1,
+.codeblock .s2 {
     color: rgb(228, 69, 58);
-}
-
-.chroma .mi {
-    color: rgb(47, 84, 207);
 }
