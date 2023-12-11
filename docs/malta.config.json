@@ -1,7 +1,7 @@
 {
   "name": "Malta",
   "description": "Malta is a CLI tool to generate documentation sites with markdown.",
-  "domain": "https://example.com",
+  "domain": "https://malta-cli.pages.dev",
   "twitter": "@pilcrowonpaper",
   "sidebar": [
     {
