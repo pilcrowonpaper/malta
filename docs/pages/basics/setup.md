@@ -11,9 +11,9 @@ Binaries for MacOS, Linux, and Windows are available from [GitHub releases](http
 For MacOS/Linux, you can install it with the following commands:
 
 ```
-curl -o mudkip.tgz -L https://github.com/pilcrowonpaper/mudkip/releases/latest/download/<platform>-<arch>.tgz
+curl -o malta.tgz -L https://github.com/pilcrowonpaper/malta/releases/latest/download/<platform>-<arch>.tgz
 
-tar -xvzf mudkip.tgz
+tar -xvzf malta.tgz
 
 install <platform>-<arch>/malta /usr/local/bin
 ```
