@@ -18,10 +18,6 @@ jobs:
         with:
           node-version: 20.5.1
           registry-url: https://registry.npmjs.org
-      - name: install dependencies
-        run: |
-          npm i -g pnpm
-          pnpm i --no-frozen-lockfile
       - name: install malta
         run: |
           curl -o malta.tgz -L https://github.com/pilcrowonpaper/malta/releases/latest/download/linux-amd64.tgz
