@@ -11,6 +11,12 @@
         ["Writing pages", "/basics/pages"],
         ["Configuring the sidebar", "/basics/sidebar"]
       ]
+    },
+    {
+      "title": "Guides",
+      "pages": [
+        ["Deploying with GitHub Actions", "/guides/github-actions"]
+      ]
     }
   ]
 }
