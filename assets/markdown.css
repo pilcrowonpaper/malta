@@ -110,3 +110,53 @@ main .codeblock a {
 .codeblock .s2 {
     color: rgb(228, 69, 58);
 }
+
+main .table-wrapper {
+    overflow: auto;
+    width: 100%;
+    white-space: nowrap;
+    padding-bottom: 1rem;
+}
+
+main table {
+    margin-top: 1rem;
+    margin-bottom: 0;
+    width: 100%;
+    text-align: left;
+    border-spacing: 0;
+}
+
+main thead,
+main tbody {
+    width: 100%;
+}
+
+main td {
+    border-bottom: 1px solid rgb(221, 221, 221);
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    table-layout: auto;
+}
+
+main th {
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding-top: 0.375rem;
+    padding-bottom: 0.375rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    border-bottom: 1px solid rgb(44, 44, 44);
+}
+
+main blockquote {
+    margin: 0;
+    border-left: 2px solid rgb(110, 110, 110);
+    padding-left: 0.5rem;
+    color: rgb(110, 110, 110);
+}
+
+main blockquote>p {
+    margin: 0;
+}
