@@ -124,15 +124,20 @@ func run() int {
 
 		urlPathname := strings.Replace(strings.Replace(dstPath, "dist", "", 1), ".html", "", 1)
 		urlPathname = strings.Replace(urlPathname, "/index", "", 1)
+		if urlPathname == "" {
+			urlPathname = "/"
+		}
+		url := config.Domain + urlPathname
 
 		err = tmpl.Execute(dstHtmlFile, Data{
 			Markdown:    template.HTML(markdownHtml),
 			Name:        config.Name,
 			Description: config.Description,
-			Url:         config.Domain + urlPathname,
+			Url:         url,
 			Twitter:     config.Twitter,
 			Title:       matter.Title,
 			NavSections: navSections,
+			Pathname:    urlPathname,
 		})
 		if err != nil {
 			panic(err)
@@ -163,6 +168,7 @@ type Data struct {
 	Url         string
 	Name        string
 	NavSections []NavSection
+	Pathname    string
 }
 
 type NavSection struct {

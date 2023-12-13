@@ -58,6 +58,7 @@ code {
     padding: 0.5rem;
     border: 0;
     background-color: transparent;
+    cursor: pointer;
 }
 
 #mobile-menu-nav {
@@ -151,7 +152,13 @@ main {
     text-decoration: none;
 }
 
-.nav-section-link:hover {
+.current-nav-section-link {
+    color: rgb(77, 107, 255);
+    text-decoration: none;
+}
+
+.nav-section-link:hover,
+.current-nav-section-link:hover {
     text-decoration: underline;
 }
 

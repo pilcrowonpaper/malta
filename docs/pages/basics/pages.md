@@ -32,6 +32,12 @@ const message = "hello world";
 
 1. item 1
 2. item 2
+
+> Note: This is a blockquote
+
+| key     | value |
+| ------- | ----- |
+| message | hello |
 ````
 
 ## Attributes
