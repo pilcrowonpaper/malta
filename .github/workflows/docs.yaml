@@ -1,4 +1,4 @@
-name: "Publish docs"
+name: Publish docs
 on:
   push:
     branches:
@@ -24,7 +24,7 @@ jobs:
           tar -xvzf malta.tgz
       - name: build
         working-directory: docs
-        run: ../linux-amd64/malta
+        run: ../linux-amd64/malta build
       - name: install wrangler
         run: npm i -g wrangler
       - name: deploy
