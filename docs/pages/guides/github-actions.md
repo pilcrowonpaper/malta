@@ -7,7 +7,7 @@ title: "Deploying with GitHGub Actions"
 You can run Malta by installing the binaries from GitHub Releases.
 
 ```yaml
-name: "Publish docs"
+name: Publish docs
 on:
   push:
     branches:
@@ -32,7 +32,7 @@ jobs:
 To deploy your docs to GitHub Pages, you need to upload the generated `dist` directory as an artifact.
 
 ```yaml
-name: "Publish docs"
+name: Publish docs
 
 on:
   push:
@@ -59,7 +59,7 @@ jobs:
       - name: upload pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
-          path: "dist"
+          path: dist
 
   deploy:
     needs: build
