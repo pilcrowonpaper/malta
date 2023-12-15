@@ -1,4 +1,4 @@
-package main
+package build
 
 import (
 	"bytes"
@@ -38,11 +38,7 @@ var mainCss []byte
 //go:embed assets/markdown.css
 var markdownCss []byte
 
-func main() {
-	os.Exit(run())
-}
-
-func run() int {
+func BuildCommand() int {
 	configJson, err := os.ReadFile("malta.config.json")
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {

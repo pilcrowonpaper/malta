@@ -14,8 +14,13 @@ Malta does not automatically generate the sidebar (navigation bar). You can defi
       "pages": [
         ["Getting started", "/basics/setup"],
         ["Writing pages", "/basics/pages"],
-        ["Configuring the sidebar", "/basics/sidebar"]
+        ["Configuring the sidebar", "/basics/sidebar"],
+        ["Commands", "/basics/commands"]
       ]
+    },
+    {
+      "title": "Guides",
+      "pages": [["Deploying with GitHub Actions", "/guides/github-actions"]]
     }
   ]
 }

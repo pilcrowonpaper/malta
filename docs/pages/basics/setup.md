@@ -51,8 +51,9 @@ Welcome to my documentation site.
 
 ## Generate HTML
 
-Run `malta`, and your HTML files will be generated in the `dist` directory.
+Run the `build` command to generate HTML files in the `dist` directory, and the `preview` to preview your site at port 3000 (default)
 
 ```
-malta
+malta build
+malta preview
 ```
