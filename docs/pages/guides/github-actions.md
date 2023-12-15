@@ -24,7 +24,7 @@ jobs:
           curl -o malta.tgz -L https://github.com/pilcrowonpaper/malta/releases/latest/download/linux-amd64.tgz
           tar -xvzf malta.tgz
       - name: build
-        run: ./linux-amd64/malta
+        run: ./linux-amd64/malta build
 ```
 
 ## GitHub Pages
@@ -55,7 +55,7 @@ jobs:
           curl -o malta.tgz -L https://github.com/pilcrowonpaper/malta/releases/latest/download/linux-amd64.tgz
           tar -xvzf malta.tgz
       - name: build
-        run: ./linux-amd64/malta
+        run: ./linux-amd64/malta build
       - name: upload pages artifact
         uses: actions/upload-pages-artifact@v1
         with:
