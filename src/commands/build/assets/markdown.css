@@ -116,10 +116,10 @@ main .table-wrapper {
     width: 100%;
     white-space: nowrap;
     padding-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 main table {
-    margin-top: 1rem;
     margin-bottom: 0;
     width: 100%;
     text-align: left;
@@ -152,9 +152,10 @@ main th {
 
 main blockquote {
     margin: 0;
-    border-left: 2px solid rgb(110, 110, 110);
+    margin-top: 1rem;
+    border-left: 2px solid rgb(150, 150, 150);
     padding-left: 0.5rem;
-    color: rgb(110, 110, 110);
+    color: rgb(150, 150, 150);
 }
 
 main blockquote>p {

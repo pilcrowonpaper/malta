@@ -77,7 +77,7 @@ func BuildCommand() int {
 	}
 
 	markdown := goldmark.New(goldmark.WithExtensions(extension.Table))
-	markdown.Parser().AddOptions(parser.WithASTTransformers(util.Prioritized(&codeBlockLinksAstTransformer{}, 500)))
+	markdown.Parser().AddOptions(parser.WithASTTransformers(util.Prioritized(&codeBlockLinksAstTransformer{}, 500)), parser.WithAutoHeadingID())
 	markdown.Renderer().AddOptions(renderer.WithNodeRenderers(util.Prioritized(&codeBlockLinksRenderer{}, 100)))
 
 	os.RemoveAll("dist")
