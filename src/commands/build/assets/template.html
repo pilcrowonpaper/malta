@@ -72,7 +72,7 @@
             <ul class="nav-section-links-list">
               {{range $page := $section.Pages}}
               <li class="nav-section-links-list-item">
-                {{if eq $.Pathname $page.Href}}
+                {{if eq $.CurrentNavPageHref $page.Href}}
                 <a href="{{$page.Href}}" class="current-nav-section-link"
                   >{{$page.Title}}</a
                 >
@@ -100,7 +100,7 @@
               <ul class="nav-section-links-list">
                 {{range $page := $section.Pages}}
                 <li class="nav-section-links-list-item">
-                  {{if eq $.Pathname $page.Href}}
+                  {{if eq $.CurrentNavPageHref $page.Href}}
                   <a href="{{$page.Href}}" class="current-nav-section-link"
                     >{{$page.Title}}</a
                   >

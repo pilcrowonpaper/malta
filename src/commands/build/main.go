@@ -82,6 +82,8 @@ func BuildCommand() int {
 
 	os.RemoveAll("dist")
 
+	tmpl, _ := template.New("html").Parse(string(htmlTemplate))
+
 	for _, markdownFilePath := range markdownFilePaths {
 		var matter struct {
 			Title string `yaml:"title"`
@@ -105,17 +107,17 @@ func BuildCommand() int {
 		markdownHtml = strings.ReplaceAll(markdownHtml, "<table>", "<div class=\"table-wrapper\"><table>")
 		markdownHtml = strings.ReplaceAll(markdownHtml, "</table>", "</table></div>")
 
-		tmpl, _ := template.New("html").Parse(string(htmlTemplate))
-
-		dstPath := strings.Replace(strings.Replace(markdownFilePath, "pages", "dist", 1), ".md", ".html", 1)
+		dstPath := strings.Replace(strings.Replace(markdownFilePath, "pages/", "dist/", 1), ".md", ".html", 1)
 
 		if err := os.MkdirAll(filepath.Dir(dstPath), os.ModePerm); err != nil {
 			panic(err)
 		}
+
 		dstHtmlFile, err := os.Create(dstPath)
 		if err != nil {
 			panic(err)
 		}
+
 		defer dstHtmlFile.Close()
 
 		urlPathname := strings.Replace(strings.Replace(dstPath, "dist", "", 1), ".html", "", 1)
@@ -125,19 +127,48 @@ func BuildCommand() int {
 		}
 		url := config.Domain + urlPathname
 
+		var currentNavPageHref string
+
+		for _, navSection := range navSections {
+			for _, sectionPage := range navSection.Pages {
+				if urlPathname == sectionPage.Href || strings.HasPrefix(urlPathname, sectionPage.Href+"/") {
+					currentNavPageHref = sectionPage.Href
+					break
+				}
+			}
+		}
+
 		err = tmpl.Execute(dstHtmlFile, Data{
-			Markdown:    template.HTML(markdownHtml),
-			Name:        config.Name,
-			Description: config.Description,
-			Url:         url,
-			Twitter:     config.Twitter,
-			Title:       matter.Title,
-			NavSections: navSections,
-			Pathname:    urlPathname,
+			Markdown:           template.HTML(markdownHtml),
+			Name:               config.Name,
+			Description:        config.Description,
+			Url:                url,
+			Twitter:            config.Twitter,
+			Title:              matter.Title,
+			NavSections:        navSections,
+			CurrentNavPageHref: currentNavPageHref,
 		})
 		if err != nil {
 			panic(err)
 		}
+	}
+
+	notFoundDstHtmlFile, err := os.Create("dist/404.html")
+	if err != nil {
+		panic(err)
+	}
+	err = tmpl.Execute(notFoundDstHtmlFile, Data{
+		Markdown:           template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
+		Name:               config.Name,
+		Description:        config.Description,
+		Url:                config.Domain,
+		Twitter:            config.Twitter,
+		Title:              "Not found",
+		NavSections:        navSections,
+		CurrentNavPageHref: "",
+	})
+	if err != nil {
+		panic(err)
 	}
 
 	os.WriteFile("dist/main.css", mainCss, os.ModePerm)
@@ -157,14 +188,14 @@ func walkPagesDir(path string, info os.FileInfo, err error) error {
 }
 
 type Data struct {
-	Markdown    template.HTML
-	Title       string
-	Description string
-	Twitter     string
-	Url         string
-	Name        string
-	NavSections []NavSection
-	Pathname    string
+	Markdown           template.HTML
+	Title              string
+	Description        string
+	Twitter            string
+	Url                string
+	Name               string
+	NavSections        []NavSection
+	CurrentNavPageHref string
 }
 
 type NavSection struct {
