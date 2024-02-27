@@ -1,3 +1,3 @@
 # Malta
 
-Create simple documentation sites using markdown. [Read the documentation →](https://malta-cli.pages.dev)
+Create simple documentation sites using markdown. [Read the documentation →](https://malta.pilcrowonpaper.com)
