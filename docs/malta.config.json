@@ -16,6 +16,13 @@
     {
       "title": "Guides",
       "pages": [["Deploying with GitHub Actions", "/guides/github-actions"]]
+    },
+    {
+      "title": "Links",
+      "pages": [
+        ["GitHub", "https://github.com/pilcrowOnPaper/malta"],
+        ["Twitter", "https://twitter.com/pilcrowonpaper"]
+      ]
     }
   ]
 }
