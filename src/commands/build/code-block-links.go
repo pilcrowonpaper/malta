@@ -3,10 +3,11 @@ package build
 import (
 	"bytes"
 	"fmt"
+	"html"
 	"strings"
 
 	"github.com/alecthomas/chroma"
-	"github.com/alecthomas/chroma/formatters/html"
+	htmlFormatter "github.com/alecthomas/chroma/formatters/html"
 	"github.com/alecthomas/chroma/lexers"
 	"github.com/alecthomas/chroma/styles"
 	"github.com/yuin/goldmark/ast"
@@ -66,13 +67,13 @@ func (r codeBlockLinksRenderer) renderCustomCodeBlockLinks(w util.BufWriter, sou
 	lexer := lexers.Get(string(codeBlock.Language(source)))
 	if lexer == nil {
 		w.WriteString("<pre class=\"codeblock\"><code>")
-		w.WriteString(content)
+		w.WriteString(html.EscapeString(content))
 		w.WriteString("</code></pre>")
 		return ast.WalkContinue, nil
 	}
 	lexer = chroma.Coalesce(lexer)
 
-	formatter := html.New(html.WithClasses(true), html.PreventSurroundingPre(true))
+	formatter := htmlFormatter.New(htmlFormatter.WithClasses(true), htmlFormatter.PreventSurroundingPre(true))
 
 	iterator, err := lexer.Tokenise(nil, content)
 	if err != nil {
