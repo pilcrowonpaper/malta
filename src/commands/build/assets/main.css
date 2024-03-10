@@ -18,6 +18,12 @@ code {
     font-size: 0.875em;
 }
 
+img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
+
 #mobile-top {
     border-bottom: 1px solid rgb(221, 221, 221);
     padding-left: 1rem;
