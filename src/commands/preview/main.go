@@ -2,6 +2,7 @@ package preview
 
 import (
 	"fmt"
+	"net"
 	"net/http"
 	"os"
 	"os/exec"
@@ -13,7 +14,7 @@ import (
 
 func PreviewCommand() int {
 	port := 3000
-	args := parseArgs(os.Args[1:]) // Change to start from index 1
+	args := parseArgs(os.Args[2:]) // Change to start from index 1
 	portArg, ok := args["p"]
 	if !ok {
 		portArg, ok = args["port"]
@@ -59,6 +60,10 @@ func PreviewCommand() int {
 			os.Exit(1)
 		}
 	}()
+
+	if portInUse(port) {
+		killPort(port)
+	}
 
 	go openBrowser(fmt.Sprintf("http://localhost:%d", port))
 
@@ -107,3 +112,28 @@ func openBrowser(url string) error {
 	return cmd.Start()
 }
 
+func portInUse(port int) bool {
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", port))
+	if err != nil {
+		return true
+	}
+	listener.Close()
+	return false
+}
+
+func killPort(port int) {
+	switch runtime.GOOS {
+	case "windows":
+		cmd := exec.Command("cmd", "/C", fmt.Sprintf("netstat -ano | findstr :%d", port))
+		out, _ := cmd.Output()
+		pid := string(out)
+		cmd = exec.Command("taskkill", "/F", "/PID", pid)
+		cmd.Run()
+	default:
+		cmd := exec.Command("sh", "-c", fmt.Sprintf("lsof -t -i:%d", port))
+		out, _ := cmd.Output()
+		pid := string(out)
+		cmd = exec.Command("kill", "-9", pid)
+		cmd.Run()
+	}
+}
