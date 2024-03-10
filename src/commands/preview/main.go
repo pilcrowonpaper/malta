@@ -4,14 +4,16 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"os/exec"
 	"path"
+	"runtime"
 	"strconv"
 	"strings"
 )
 
 func PreviewCommand() int {
 	port := 3000
-	args := parseArgs(os.Args[2:])
+	args := parseArgs(os.Args[1:]) // Change to start from index 1
 	portArg, ok := args["p"]
 	if !ok {
 		portArg, ok = args["port"]
@@ -32,26 +34,35 @@ func PreviewCommand() int {
 			if err != nil {
 				data, err := os.ReadFile(path.Join("dist", req.URL.Path))
 				if err != nil {
-					w.WriteHeader(404)
+					w.WriteHeader(http.StatusNotFound)
 					w.Write([]byte("404 - Not found"))
 					return
 				}
 				if strings.HasSuffix(req.URL.Path, ".css") {
 					w.Header().Set("Content-Type", "text/css")
 				}
-				w.WriteHeader(200)
+				w.WriteHeader(http.StatusOK)
 				w.Write(data)
 				return
 			}
 		}
 		w.Header().Set("Content-Type", "text/html")
-		w.WriteHeader(200)
+		w.WriteHeader(http.StatusOK)
 		w.Write(html)
 	})
-	fmt.Printf("Starting server on port %v...\n", port)
-	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
-	fmt.Println(err)
-	return 1
+
+	go func() {
+		fmt.Printf("Starting server on port %v...\n", port)
+		err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}()
+
+	go openBrowser(fmt.Sprintf("http://localhost:%d", port))
+
+	select {}
 }
 
 func parseArgs(argList []string) map[string]string {
@@ -82,3 +93,17 @@ func parseArgs(argList []string) map[string]string {
 	}
 	return args
 }
+
+func openBrowser(url string) error {
+	var cmd *exec.Cmd
+	switch runtime.GOOS {
+	case "darwin":
+		cmd = exec.Command("open", url)
+	case "windows":
+		cmd = exec.Command("cmd", "/c", "start", url)
+	default:
+		cmd = exec.Command("xdg-open", url)
+	}
+	return cmd.Start()
+}
+

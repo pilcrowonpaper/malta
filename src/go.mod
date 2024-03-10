@@ -1,6 +1,6 @@
 module github.com/pilcrowOnPaper/malta
 
-go 1.21.3
+go 1.23
 
 require (
 	github.com/adrg/frontmatter v0.2.0
