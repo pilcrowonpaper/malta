@@ -53,6 +53,10 @@ func PreviewCommand() int {
 	})
 
 	go func() {
+		if portInUse(port) {
+			killPort(port)
+		}
+
 		fmt.Printf("Starting server on port %v...\n", port)
 		err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
 		if err != nil {
@@ -60,10 +64,6 @@ func PreviewCommand() int {
 			os.Exit(1)
 		}
 	}()
-
-	if portInUse(port) {
-		killPort(port)
-	}
 
 	go openBrowser(fmt.Sprintf("http://localhost:%d", port))
 
@@ -133,6 +133,7 @@ func killPort(port int) {
 		cmd := exec.Command("sh", "-c", fmt.Sprintf("lsof -t -i:%d", port))
 		out, _ := cmd.Output()
 		pid := string(out)
+		fmt.Println(pid)
 		cmd = exec.Command("kill", "-9", pid)
 		cmd.Run()
 	}
