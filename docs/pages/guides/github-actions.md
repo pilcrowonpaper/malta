@@ -1,8 +1,8 @@
 ---
-title: "Deploying with GitHGub Actions"
+title: "Deploying with GitHub Actions"
 ---
 
-# Deploying with GitHGub Actions
+# Deploying with GitHub Actions
 
 You can run Malta by installing the binaries from GitHub Releases.
 
