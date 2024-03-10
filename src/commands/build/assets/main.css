@@ -176,3 +176,9 @@ main {
     font-size: 1.5rem;
     line-height: 1;
 }
+
+img {
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+}
