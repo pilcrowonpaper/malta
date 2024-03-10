@@ -160,3 +160,23 @@ main blockquote {
 main blockquote>p {
     margin: 0;
 }
+
+#code-container {
+    position: relative;
+}
+
+#codeblock-language {
+    position: absolute; 
+    right: 0.5rem; 
+    z-index: 10; 
+    padding-left: 0.5rem;
+    padding-right: 0.5rem; 
+    padding-bottom: 0.15rem;
+    border-bottom-right-radius: 0.25rem;
+    border-bottom-left-radius: 0.25rem; 
+    font-size: 0.75rem;
+    line-height: 1rem; 
+    color: #000000; 
+    background-color: #D1D5DB; 
+    font-weight: bold;
+}

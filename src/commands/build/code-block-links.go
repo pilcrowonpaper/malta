@@ -94,9 +94,13 @@ func (r codeBlockLinksRenderer) renderCustomCodeBlockLinks(w util.BufWriter, sou
 		html = strings.ReplaceAll(html, "$$"+target, fmt.Sprintf("<a href=\"%s\">%s</a>", dest, target))
 	}
 
+	language := string(codeBlock.Language(source))
+	w.WriteString("<div id=\"code-container\">")
+	w.WriteString(fmt.Sprintf("<span id=\"codeblock-language\">%s</span>", language))
 	w.WriteString("<pre class=\"codeblock\"><code>")
 	w.WriteString(html)
 	w.WriteString("</code></pre>")
+	w.WriteString("</div>")
 
 	return ast.WalkContinue, nil
 }
