@@ -114,6 +114,16 @@
               </ul>
             </section>
             {{end}}
+            <section>
+              <h2 class="nav-section-title">On this page</h2>
+              <ul class="nav-section-links-list">
+                {{range $heading := .Headings}}
+                <li class="nav-section-links-list-item">
+                  <a href="#{{$heading.Anchor}}" class="nav-section-link">{{$heading.Text}}</a>
+                </li>
+                {{end}}
+              </ul>
+            </section>
           </nav>
         </aside>
         <main>{{.Markdown}}</main>

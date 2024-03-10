@@ -6,9 +6,11 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html"
 	"html/template"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 
 	"github.com/adrg/frontmatter"
@@ -107,6 +109,14 @@ func BuildCommand() int {
 		markdownHtml = strings.ReplaceAll(markdownHtml, "<table>", "<div class=\"table-wrapper\"><table>")
 		markdownHtml = strings.ReplaceAll(markdownHtml, "</table>", "</table></div>")
 
+		markdownContent := markdownHtmlBuf.Bytes()
+		headings := extractHeadings(markdownContent)
+		for _, heading := range headings {
+			anchorTag := fmt.Sprintf(`<a href="#%s">%s</a>`, heading.Anchor, heading.Text)
+
+			markdownHtml = strings.ReplaceAll(markdownHtml, heading.OriginalText, fmt.Sprintf("<h%s id=\"%s\">%s</h%s>", heading.Level, heading.Anchor, anchorTag, heading.Level))
+		}
+
 		dstPath := strings.Replace(strings.Replace(markdownFilePath, "pages/", "dist/", 1), ".md", ".html", 1)
 
 		if err := os.MkdirAll(filepath.Dir(dstPath), os.ModePerm); err != nil {
@@ -138,6 +148,11 @@ func BuildCommand() int {
 			}
 		}
 
+		var convertedHeadings []Heading
+		for _, h := range headings {
+			convertedHeadings = append(convertedHeadings, Heading{Anchor: h.Anchor, Text: h.Text, OriginalText: h.OriginalText})
+		}
+
 		err = tmpl.Execute(dstHtmlFile, Data{
 			Markdown:           template.HTML(markdownHtml),
 			Name:               config.Name,
@@ -147,6 +162,7 @@ func BuildCommand() int {
 			Title:              matter.Title,
 			NavSections:        navSections,
 			CurrentNavPageHref: currentNavPageHref,
+			Headings:           convertedHeadings,
 		})
 		if err != nil {
 			panic(err)
@@ -187,15 +203,40 @@ func walkPagesDir(path string, info os.FileInfo, err error) error {
 	return nil
 }
 
+func extractHeadings(markdownContent []byte) []Heading {
+	headingRegex := regexp.MustCompile(`(?i)<h([1-6])\s+id="([^"]+)">([^<]+)<\/h[1-6]>`)
+
+	headings := []Heading{}
+	matches := headingRegex.FindAllSubmatch(markdownContent, -1)
+
+	for _, match := range matches {
+		level := string(match[1])
+		text := strings.TrimSpace(html.UnescapeString(string(match[3])))
+		anchor := strings.ToLower(strings.ReplaceAll(string(match[2]), " ", "-"))
+		originalText := string(match[0])
+		headings = append(headings, Heading{Level: level, Anchor: anchor, Text: text, OriginalText: originalText})
+	}
+
+	return headings
+}
+
 type Data struct {
 	Markdown           template.HTML
 	Title              string
 	Description        string
 	Twitter            string
 	Url                string
+	Headings           []Heading
 	Name               string
 	NavSections        []NavSection
 	CurrentNavPageHref string
+}
+
+type Heading struct {
+	Level        string
+	Anchor       string
+	Text         string
+	OriginalText string
 }
 
 type NavSection struct {

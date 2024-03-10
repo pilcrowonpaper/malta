@@ -188,3 +188,7 @@ img {
     height: auto;
     object-fit: cover;
 }
+
+a {
+    text-decoration: none !important;
+}
