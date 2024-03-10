@@ -51,15 +51,13 @@ main>ul {
     margin-top: 1rem;
     margin-bottom: 0;
     list-style-type: disc;
-    padding-left: 2rem;
+    padding-left: 1.5rem;
 }
 
 main>ol {
     margin-top: 1rem;
     margin-bottom: 0;
     list-style-type: decimal;
-    list-style-position: inside;
-    padding-left: 2rem;
 }
 
 main ul>li>ul {
