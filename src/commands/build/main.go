@@ -128,11 +128,36 @@ func BuildCommand() int {
 		url := config.Domain + urlPathname
 
 		var currentNavPageHref string
+		prevNavPage := NavPage{Title:"", Href: ""}
+		nextNavPage := NavPage{Title:"", Href: ""}
 
 		for _, navSection := range navSections {
-			for _, sectionPage := range navSection.Pages {
+			for sectionPageIndex, sectionPage := range navSection.Pages {
 				if urlPathname == sectionPage.Href || strings.HasPrefix(urlPathname, sectionPage.Href+"/") {
 					currentNavPageHref = sectionPage.Href
+					if sectionPageIndex == 0 && len(navSection.Pages) >= 2 {
+						// first index
+						// set next
+						if isPageLink(navSection.Pages[sectionPageIndex + 1].Href){
+							nextNavPage = navSection.Pages[sectionPageIndex + 1]
+						}
+					} else if sectionPageIndex > 0 && sectionPageIndex < len(navSection.Pages) - 1 {
+						// first index < index < last index
+						// set prev and next
+						if isPageLink(navSection.Pages[sectionPageIndex - 1].Href){
+							prevNavPage = navSection.Pages[sectionPageIndex - 1]
+						}
+
+						if isPageLink(navSection.Pages[sectionPageIndex + 1].Href){
+							nextNavPage = navSection.Pages[sectionPageIndex + 1]
+						}
+					} else if sectionPageIndex == len(navSection.Pages) - 1 && len(navSection.Pages) >= 2 {
+						// last index
+						// set prev
+						if isPageLink(navSection.Pages[sectionPageIndex - 1].Href){
+							prevNavPage = navSection.Pages[sectionPageIndex - 1]
+						}
+					}
 					break
 				}
 			}
@@ -147,6 +172,8 @@ func BuildCommand() int {
 			Title:              matter.Title,
 			NavSections:        navSections,
 			CurrentNavPageHref: currentNavPageHref,
+			PrevNavPage: 	prevNavPage,
+			NextNavPage: 	nextNavPage,
 		})
 		if err != nil {
 			panic(err)
@@ -166,6 +193,8 @@ func BuildCommand() int {
 		Title:              "Not found",
 		NavSections:        navSections,
 		CurrentNavPageHref: "",
+		PrevNavPage: 	NavPage{Title:"", Href: ""},
+		NextNavPage: 	NavPage{Title:"", Href: ""},
 	})
 	if err != nil {
 		panic(err)
@@ -174,6 +203,10 @@ func BuildCommand() int {
 	os.WriteFile("dist/main.css", mainCss, os.ModePerm)
 	os.WriteFile("dist/markdown.css", markdownCss, os.ModePerm)
 	return 0
+}
+
+func isPageLink(link string) bool {
+	return strings.HasPrefix(link, "/")
 }
 
 func walkPagesDir(path string, info os.FileInfo, err error) error {
@@ -196,6 +229,8 @@ type Data struct {
 	Name               string
 	NavSections        []NavSection
 	CurrentNavPageHref string
+	PrevNavPage		   NavPage
+	NextNavPage 	   NavPage
 }
 
 type NavSection struct {
