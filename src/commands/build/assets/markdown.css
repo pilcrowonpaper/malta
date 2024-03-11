@@ -118,7 +118,6 @@ main table {
     margin-bottom: 0;
     width: 100%;
     text-align: left;
-    border-spacing: 0;
 }
 
 main thead,
@@ -133,11 +132,12 @@ main td {
     padding-left: 0.25rem;
     padding-right: 0.25rem;
     table-layout: auto;
+    font-size: 0.9rem;
 }
 
 main th {
-    font-weight: 500;
-    font-size: 0.875rem;
+    font-weight: 700;
+    font-size: 1rem;
     padding-top: 0.375rem;
     padding-bottom: 0.375rem;
     padding-left: 0.25rem;
