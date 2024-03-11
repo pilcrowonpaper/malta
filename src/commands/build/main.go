@@ -204,7 +204,7 @@ func walkPagesDir(path string, info os.FileInfo, err error) error {
 }
 
 func extractHeadings(markdownContent []byte) []Heading {
-	headingRegex := regexp.MustCompile(`(?i)<h([1-6])\s+id="([^"]+)">([^<]+)<\/h[1-6]>`)
+	headingRegex := regexp.MustCompile(`(?i)<h([2-6])\s+id="([^"]+)">([^<]+)<\/h[2-6]>`)
 
 	headings := []Heading{}
 	matches := headingRegex.FindAllSubmatch(markdownContent, -1)
