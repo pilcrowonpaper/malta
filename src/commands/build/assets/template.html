@@ -117,6 +117,7 @@
           </nav>
         </aside>
         <main>
+          <h4 class="main-section-title">{{.SectionTitle}}</h4>
           {{.Markdown}}
           <br />
           {{if or (ne .PrevNavPage.Href "") (ne .NextNavPage.Href "")}}

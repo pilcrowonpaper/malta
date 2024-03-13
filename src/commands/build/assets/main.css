@@ -127,6 +127,13 @@ main {
   padding-top: 2rem;
 }
 
+.main-section-title {
+  color: rgb(110, 110, 110);
+  margin: 0;
+  font-size: 16px;
+  font-weight: 400;
+}
+
 .main-nav-link-container {
   display: grid;
   grid-template-columns: 1fr;
