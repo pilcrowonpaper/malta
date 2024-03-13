@@ -127,12 +127,38 @@ func BuildCommand() int {
 		}
 		url := config.Domain + urlPathname
 
-		var currentNavPageHref string
+		var currentNavPageHref, currentSectionTitle string
+		prevNavPage := NavPage{Title: "", Href: ""}
+		nextNavPage := NavPage{Title: "", Href: ""}
 
 		for _, navSection := range navSections {
-			for _, sectionPage := range navSection.Pages {
+			for sectionPageIndex, sectionPage := range navSection.Pages {
 				if urlPathname == sectionPage.Href || strings.HasPrefix(urlPathname, sectionPage.Href+"/") {
+					currentSectionTitle = navSection.Title
 					currentNavPageHref = sectionPage.Href
+					if sectionPageIndex == 0 && len(navSection.Pages) >= 2 {
+						// first index
+						// set next
+						if isPageLink(navSection.Pages[sectionPageIndex+1].Href) {
+							nextNavPage = navSection.Pages[sectionPageIndex+1]
+						}
+					} else if sectionPageIndex > 0 && sectionPageIndex < len(navSection.Pages)-1 {
+						// first index < index < last index
+						// set prev and next
+						if isPageLink(navSection.Pages[sectionPageIndex-1].Href) {
+							prevNavPage = navSection.Pages[sectionPageIndex-1]
+						}
+
+						if isPageLink(navSection.Pages[sectionPageIndex+1].Href) {
+							nextNavPage = navSection.Pages[sectionPageIndex+1]
+						}
+					} else if sectionPageIndex == len(navSection.Pages)-1 && len(navSection.Pages) >= 2 {
+						// last index
+						// set prev
+						if isPageLink(navSection.Pages[sectionPageIndex-1].Href) {
+							prevNavPage = navSection.Pages[sectionPageIndex-1]
+						}
+					}
 					break
 				}
 			}
@@ -140,6 +166,7 @@ func BuildCommand() int {
 
 		err = tmpl.Execute(dstHtmlFile, Data{
 			Markdown:           template.HTML(markdownHtml),
+			SectionTitle:       currentSectionTitle,
 			Name:               config.Name,
 			Description:        config.Description,
 			Url:                url,
@@ -147,6 +174,8 @@ func BuildCommand() int {
 			Title:              matter.Title,
 			NavSections:        navSections,
 			CurrentNavPageHref: currentNavPageHref,
+			PrevNavPage:        prevNavPage,
+			NextNavPage:        nextNavPage,
 		})
 		if err != nil {
 			panic(err)
@@ -159,6 +188,7 @@ func BuildCommand() int {
 	}
 	err = tmpl.Execute(notFoundDstHtmlFile, Data{
 		Markdown:           template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
+		SectionTitle:       "",
 		Name:               config.Name,
 		Description:        config.Description,
 		Url:                config.Domain,
@@ -166,6 +196,8 @@ func BuildCommand() int {
 		Title:              "Not found",
 		NavSections:        navSections,
 		CurrentNavPageHref: "",
+		PrevNavPage:        NavPage{Title: "", Href: ""},
+		NextNavPage:        NavPage{Title: "", Href: ""},
 	})
 	if err != nil {
 		panic(err)
@@ -174,6 +206,10 @@ func BuildCommand() int {
 	os.WriteFile("dist/main.css", mainCss, os.ModePerm)
 	os.WriteFile("dist/markdown.css", markdownCss, os.ModePerm)
 	return 0
+}
+
+func isPageLink(link string) bool {
+	return strings.HasPrefix(link, "/")
 }
 
 func walkPagesDir(path string, info os.FileInfo, err error) error {
@@ -189,6 +225,7 @@ func walkPagesDir(path string, info os.FileInfo, err error) error {
 
 type Data struct {
 	Markdown           template.HTML
+	SectionTitle       string
 	Title              string
 	Description        string
 	Twitter            string
@@ -196,6 +233,8 @@ type Data struct {
 	Name               string
 	NavSections        []NavSection
 	CurrentNavPageHref string
+	PrevNavPage        NavPage
+	NextNavPage        NavPage
 }
 
 type NavSection struct {

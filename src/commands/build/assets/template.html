@@ -77,9 +77,9 @@
                   >{{$page.Title}}</a
                 >
                 {{else}}
-                  <a href="{{$page.Href}}" class="nav-section-link"
-                    >{{$page.Title}}</a
-                  >
+                <a href="{{$page.Href}}" class="nav-section-link"
+                  >{{$page.Title}}</a
+                >
                 {{end}}
               </li>
               {{end}}
@@ -116,7 +116,26 @@
             {{end}}
           </nav>
         </aside>
-        <main>{{.Markdown}}</main>
+        <main>
+          <h4 class="main-section-title">{{.SectionTitle}}</h4>
+          {{.Markdown}}
+          <br />
+          {{if or (ne .PrevNavPage.Href "") (ne .NextNavPage.Href "")}}
+          <section class="main-nav-link-container">
+            {{if ne .PrevNavPage.Href ""}}
+            <a href="{{.PrevNavPage.Href}}" class="main-nav-link previous">
+              <span class="description">Previous</span>
+              <span class="title"> {{.PrevNavPage.Title}} </span>
+            </a>
+            {{end}} {{if ne .NextNavPage.Href ""}}
+            <a href="{{.NextNavPage.Href}}" class="main-nav-link next">
+              <span class="description">Next</span>
+              <span class="title">{{.NextNavPage.Title}}</span></a
+            >
+            {{end}}
+          </section>
+          {{end}}
+        </main>
       </div>
     </div>
   </body>
