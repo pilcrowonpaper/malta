@@ -3,8 +3,8 @@ main h1 {
     font-size: 2rem;
     line-height: 1.25;
     overflow-wrap: break-word;
-    margin-bottom: 2rem;
-    margin-top: 0;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
 }
 
 @media (min-width: 640px) {
