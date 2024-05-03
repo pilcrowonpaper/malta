@@ -176,3 +176,11 @@ main blockquote>p {
     background-color: #D1D5DB; 
     font-weight: bold;
 }
+
+.nav-section-link:hover {
+    background-color: #f0f0f0;
+    border-radius: 0.25rem; 
+    padding: 0.25rem 0rem;
+    color: #000000;
+    font-weight: 500;
+}
