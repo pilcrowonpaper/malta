@@ -20,11 +20,13 @@ import (
 )
 
 var config struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Domain      string                 `json:"domain"`
-	Twitter     string                 `json:"twitter"`
-	Sidebar     []SidebarSectionConfig `json:"sidebar"`
+	Name           string                 `json:"name"`
+	Description    string                 `json:"description"`
+	Domain         string                 `json:"domain"`
+	Twitter        string                 `json:"twitter"`
+	Sidebar        []SidebarSectionConfig `json:"sidebar"`
+	LogoFileName   string                 `json:"logo"`
+	OGLogoFileName string                 `json:"og_logo"`
 }
 
 var markdownFilePaths []string
@@ -84,6 +86,20 @@ func BuildCommand() int {
 
 	tmpl, _ := template.New("html").Parse(string(htmlTemplate))
 
+	var ogImageURL, logoImageSrc string
+
+	if config.OGLogoFileName != "" {
+		ogImageURL = config.Domain + "/" + config.OGLogoFileName
+	}
+	if config.LogoFileName != "" {
+		logoImageSrc = "/" + config.LogoFileName
+	}
+
+	var favicon bool
+	if _, err := os.Stat("favicon.ico"); err == nil {
+		favicon = true
+	}
+
 	for _, markdownFilePath := range markdownFilePaths {
 		var matter struct {
 			Title string `yaml:"title"`
@@ -125,7 +141,6 @@ func BuildCommand() int {
 		if urlPathname == "" {
 			urlPathname = "/"
 		}
-		url := config.Domain + urlPathname
 
 		var currentNavPageHref string
 
@@ -142,11 +157,14 @@ func BuildCommand() int {
 			Markdown:           template.HTML(markdownHtml),
 			Name:               config.Name,
 			Description:        config.Description,
-			Url:                url,
+			Url:                config.Domain + urlPathname,
 			Twitter:            config.Twitter,
 			Title:              matter.Title,
 			NavSections:        navSections,
 			CurrentNavPageHref: currentNavPageHref,
+			LogoImageSrc:       logoImageSrc,
+			OGImageURL:         ogImageURL,
+			Favicon:            favicon,
 		})
 		if err != nil {
 			panic(err)
@@ -158,14 +176,16 @@ func BuildCommand() int {
 		panic(err)
 	}
 	err = tmpl.Execute(notFoundDstHtmlFile, Data{
-		Markdown:           template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
-		Name:               config.Name,
-		Description:        config.Description,
-		Url:                config.Domain,
-		Twitter:            config.Twitter,
-		Title:              "Not found",
-		NavSections:        navSections,
-		CurrentNavPageHref: "",
+		Markdown:     template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
+		Name:         config.Name,
+		Description:  config.Description,
+		Url:          config.Domain,
+		Twitter:      config.Twitter,
+		Title:        "Not found",
+		NavSections:  navSections,
+		LogoImageSrc: logoImageSrc,
+		OGImageURL:   ogImageURL,
+		Favicon:      favicon,
 	})
 	if err != nil {
 		panic(err)
@@ -173,6 +193,40 @@ func BuildCommand() int {
 
 	os.WriteFile("dist/main.css", mainCss, os.ModePerm)
 	os.WriteFile("dist/markdown.css", markdownCss, os.ModePerm)
+
+	if config.LogoFileName != "" {
+		logoFile, err := os.ReadFile(config.LogoFileName)
+		if err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				fmt.Printf("Missing '%s'\n", config.LogoFileName)
+				return 1
+			}
+			panic(err)
+		}
+		os.WriteFile(filepath.Join("dist", config.LogoFileName), logoFile, os.ModePerm)
+	}
+	if config.OGLogoFileName != "" {
+		logoFile, err := os.ReadFile(config.OGLogoFileName)
+		if err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				fmt.Printf("Missing '%s'\n", config.OGLogoFileName)
+				return 1
+			}
+			panic(err)
+		}
+		os.WriteFile(filepath.Join("dist", config.OGLogoFileName), logoFile, os.ModePerm)
+	}
+	if favicon {
+		faviconICO, err := os.ReadFile("favicon.ico")
+		if err != nil {
+			if errors.Is(err, os.ErrNotExist) {
+				fmt.Printf("Missing '%s'\n", "favicon.ico")
+				return 1
+			}
+			panic(err)
+		}
+		os.WriteFile("dist/favicon.ico", faviconICO, os.ModePerm)
+	}
 	return 0
 }
 
@@ -196,6 +250,9 @@ type Data struct {
 	Name               string
 	NavSections        []NavSection
 	CurrentNavPageHref string
+	LogoImageSrc       string
+	OGImageURL         string
+	Favicon            bool
 }
 
 type NavSection struct {

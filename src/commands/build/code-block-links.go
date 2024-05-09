@@ -31,15 +31,14 @@ func (a codeBlockLinksAstTransformer) Transform(node *ast.Document, reader text.
 		defCount := 0
 		for i := 0; i < lineCount; i++ {
 			lineValue := string(reader.Value(n.Lines().At(i)))
-			if !strings.HasPrefix(lineValue, "//$") {
-				break
+			if strings.HasPrefix(lineValue, "//$") {
+				defCount += 1
+				keyValue := strings.Split(strings.TrimSpace(strings.Replace(lineValue, "//$", "", 1)), "=")
+				if len(keyValue) != 2 {
+					continue
+				}
+				n.SetAttribute([]byte("link:"+keyValue[0]), keyValue[1])
 			}
-			defCount += 1
-			keyValue := strings.Split(strings.TrimSpace(strings.Replace(lineValue, "//$", "", 1)), "=")
-			if len(keyValue) != 2 {
-				continue
-			}
-			n.SetAttribute([]byte("link:"+keyValue[0]), keyValue[1])
 		}
 		n.Lines().SetSliced(defCount, n.Lines().Len())
 		return ast.WalkContinue, nil
@@ -63,6 +62,15 @@ func (r codeBlockLinksRenderer) renderCustomCodeBlockLinks(w util.BufWriter, sou
 	for i := 0; i < codeBlock.Lines().Len(); i++ {
 		line := codeBlock.Lines().At(i)
 		content += string(line.Value(source))
+	}
+	for _, attribute := range node.Attributes() {
+		attributeName := string(attribute.Name)
+		if !strings.HasPrefix(attributeName, "link:") {
+			continue
+		}
+		target := strings.Replace(attributeName, "link:", "", 1)
+		content = strings.ReplaceAll(content, "$$"+target, "__MALTA_CODEBLOCK_LINK_"+target)
+
 	}
 	lexer := lexers.Get(string(codeBlock.Language(source)))
 	if lexer == nil {
@@ -91,7 +99,7 @@ func (r codeBlockLinksRenderer) renderCustomCodeBlockLinks(w util.BufWriter, sou
 		}
 		target := strings.Replace(attributeName, "link:", "", 1)
 		dest := attribute.Value.(string)
-		html = strings.ReplaceAll(html, "$$"+target, fmt.Sprintf("<a href=\"%s\">%s</a>", dest, target))
+		html = strings.ReplaceAll(html, "__MALTA_CODEBLOCK_LINK_"+target, fmt.Sprintf("<a href=\"%s\">%s</a>", dest, target))
 	}
 
 	w.WriteString("<pre class=\"codeblock\"><code>")

@@ -20,7 +20,7 @@ install <platform>-<arch>/malta /usr/local/bin
 
 ## Create a config file
 
-Create `malta.config.json` in the project root.
+Create `malta.config.json` in the project root. 
 
 ```json
 {
@@ -31,9 +31,13 @@ Create `malta.config.json` in the project root.
 
     // optional
     "twitter": "@pilcrowonpaper", // twitter account associated with the project
-    "sidebar" [] // see 'Sidebar' page
+    "sidebar" [], // see 'Sidebar' page
+    "logo": "logo.svg", //for sidebar (must be the name of a file in the same dir)
+    "og_logo": "og_logo.png" // square image of OG (must be the name of a file in the same dir)
 }
 ```
+
+You can also add a `favicon.ico` next to the config.
 
 ## Create `pages` directory
 

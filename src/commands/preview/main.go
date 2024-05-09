@@ -2,9 +2,11 @@ package preview
 
 import (
 	"fmt"
+	"mime"
 	"net/http"
 	"os"
 	"path"
+	"path/filepath"
 	"strconv"
 	"strings"
 )
@@ -26,27 +28,22 @@ func PreviewCommand() int {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		html, err := os.ReadFile(path.Join("dist", req.URL.Path+".html"))
+		extension := filepath.Ext(req.URL.Path)
+		w.Header().Set("Content-Type", mime.TypeByExtension(extension))
+		data, err := os.ReadFile(path.Join("dist", req.URL.Path+".html"))
 		if err != nil {
-			html, err = os.ReadFile(path.Join("dist", req.URL.Path, "index.html"))
+			data, err = os.ReadFile(path.Join("dist", req.URL.Path, "index.html"))
 			if err != nil {
-				data, err := os.ReadFile(path.Join("dist", req.URL.Path))
+				data, err = os.ReadFile(path.Join("dist", req.URL.Path))
 				if err != nil {
 					w.WriteHeader(404)
 					w.Write([]byte("404 - Not found"))
 					return
 				}
-				if strings.HasSuffix(req.URL.Path, ".css") {
-					w.Header().Set("Content-Type", "text/css")
-				}
-				w.WriteHeader(200)
-				w.Write(data)
-				return
 			}
 		}
-		w.Header().Set("Content-Type", "text/html")
 		w.WriteHeader(200)
-		w.Write(html)
+		w.Write(data)
 	})
 	fmt.Printf("Starting server on port %v...\n", port)
 	err := http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
