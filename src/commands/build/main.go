@@ -2,7 +2,9 @@ package build
 
 import (
 	"bytes"
+	"crypto/sha1"
 	_ "embed"
+	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -20,13 +22,12 @@ import (
 )
 
 var config struct {
-	Name           string                 `json:"name"`
-	Description    string                 `json:"description"`
-	Domain         string                 `json:"domain"`
-	Twitter        string                 `json:"twitter"`
-	Sidebar        []SidebarSectionConfig `json:"sidebar"`
-	LogoFileName   string                 `json:"logo"`
-	OGLogoFileName string                 `json:"og_logo"`
+	Name        string                 `json:"name"`
+	Description string                 `json:"description"`
+	Domain      string                 `json:"domain"`
+	Twitter     string                 `json:"twitter"`
+	Sidebar     []SidebarSectionConfig `json:"sidebar"`
+	Bundle      bool                   `json:"bundle"`
 }
 
 var markdownFilePaths []string
@@ -35,10 +36,10 @@ var markdownFilePaths []string
 var htmlTemplate []byte
 
 //go:embed assets/main.css
-var mainCss []byte
+var mainCSS []byte
 
 //go:embed assets/markdown.css
-var markdownCss []byte
+var markdownCSS []byte
 
 func BuildCommand() int {
 	configJson, err := os.ReadFile("malta.config.json")
@@ -62,6 +63,57 @@ func BuildCommand() int {
 	if config.Description == "" {
 		fmt.Println("Missing config: description")
 		return 1
+	}
+
+	dirEntries, err := os.ReadDir(".")
+	if err != nil {
+		panic(err)
+	}
+
+	var logoFileName, ogLogoFileName string
+
+	for _, dirEntry := range dirEntries {
+		if dirEntry.IsDir() {
+			continue
+		}
+		fileName := dirEntry.Name()
+		fileNameWithoutExtension := fileNameWithoutExtension(fileName)
+		if fileNameWithoutExtension == "logo" {
+			logoFileName = fileName
+		}
+		if fileNameWithoutExtension == "og-logo" {
+			ogLogoFileName = fileName
+		}
+	}
+
+	var logoFile, ogLogoFile []byte
+
+	if logoFileName != "" {
+		logoFile, err = os.ReadFile(logoFileName)
+		if err != nil {
+			panic(err)
+		}
+	}
+	if ogLogoFileName != "" {
+		ogLogoFile, err = os.ReadFile(ogLogoFileName)
+		if err != nil {
+			panic(err)
+		}
+	}
+
+	mainCSSFileName, markdownCSSFileName := "main.css", "markdown.css"
+
+	if config.Bundle && logoFileName != "" {
+		logoFileName = getHashedFileName(logoFile, logoFileName)
+	}
+
+	if config.Bundle && ogLogoFileName != "" {
+		ogLogoFileName = getHashedFileName(ogLogoFile, ogLogoFileName)
+	}
+
+	if config.Bundle {
+		mainCSSFileName = getHashedFileName(mainCSS, mainCSSFileName)
+		markdownCSSFileName = getHashedFileName(markdownCSS, markdownCSSFileName)
 	}
 
 	navSections := []NavSection{}
@@ -88,11 +140,11 @@ func BuildCommand() int {
 
 	var ogImageURL, logoImageSrc string
 
-	if config.OGLogoFileName != "" {
-		ogImageURL = config.Domain + "/" + config.OGLogoFileName
+	if ogLogoFileName != "" {
+		ogImageURL = config.Domain + "/" + ogLogoFileName
 	}
-	if config.LogoFileName != "" {
-		logoImageSrc = "/" + config.LogoFileName
+	if logoFileName != "" {
+		logoImageSrc = "/" + logoFileName
 	}
 
 	var favicon bool
@@ -165,6 +217,8 @@ func BuildCommand() int {
 			LogoImageSrc:       logoImageSrc,
 			OGImageURL:         ogImageURL,
 			Favicon:            favicon,
+			MainCSSSrc:         "/" + mainCSSFileName,
+			MarkdownCSSSrc:     "/" + markdownCSSFileName,
 		})
 		if err != nil {
 			panic(err)
@@ -176,53 +230,35 @@ func BuildCommand() int {
 		panic(err)
 	}
 	err = tmpl.Execute(notFoundDstHtmlFile, Data{
-		Markdown:     template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
-		Name:         config.Name,
-		Description:  config.Description,
-		Url:          config.Domain,
-		Twitter:      config.Twitter,
-		Title:        "Not found",
-		NavSections:  navSections,
-		LogoImageSrc: logoImageSrc,
-		OGImageURL:   ogImageURL,
-		Favicon:      favicon,
+		Markdown:       template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
+		Name:           config.Name,
+		Description:    config.Description,
+		Url:            config.Domain,
+		Twitter:        config.Twitter,
+		Title:          "Not found",
+		NavSections:    navSections,
+		LogoImageSrc:   logoImageSrc,
+		OGImageURL:     ogImageURL,
+		Favicon:        favicon,
+		MainCSSSrc:     "/" + mainCSSFileName,
+		MarkdownCSSSrc: "/" + markdownCSSFileName,
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	os.WriteFile("dist/main.css", mainCss, os.ModePerm)
-	os.WriteFile("dist/markdown.css", markdownCss, os.ModePerm)
+	os.WriteFile(filepath.Join("dist", mainCSSFileName), mainCSS, os.ModePerm)
+	os.WriteFile(filepath.Join("dist", markdownCSSFileName), markdownCSS, os.ModePerm)
+	if logoFileName != "" {
+		os.WriteFile(filepath.Join("dist", logoFileName), logoFile, os.ModePerm)
+	}
+	if ogLogoFileName != "" {
+		os.WriteFile(filepath.Join("dist", ogLogoFileName), ogLogoFile, os.ModePerm)
+	}
 
-	if config.LogoFileName != "" {
-		logoFile, err := os.ReadFile(config.LogoFileName)
-		if err != nil {
-			if errors.Is(err, os.ErrNotExist) {
-				fmt.Printf("Missing '%s'\n", config.LogoFileName)
-				return 1
-			}
-			panic(err)
-		}
-		os.WriteFile(filepath.Join("dist", config.LogoFileName), logoFile, os.ModePerm)
-	}
-	if config.OGLogoFileName != "" {
-		logoFile, err := os.ReadFile(config.OGLogoFileName)
-		if err != nil {
-			if errors.Is(err, os.ErrNotExist) {
-				fmt.Printf("Missing '%s'\n", config.OGLogoFileName)
-				return 1
-			}
-			panic(err)
-		}
-		os.WriteFile(filepath.Join("dist", config.OGLogoFileName), logoFile, os.ModePerm)
-	}
 	if favicon {
 		faviconICO, err := os.ReadFile("favicon.ico")
 		if err != nil {
-			if errors.Is(err, os.ErrNotExist) {
-				fmt.Printf("Missing '%s'\n", "favicon.ico")
-				return 1
-			}
 			panic(err)
 		}
 		os.WriteFile("dist/favicon.ico", faviconICO, os.ModePerm)
@@ -241,6 +277,16 @@ func walkPagesDir(path string, info os.FileInfo, err error) error {
 	return nil
 }
 
+func fileNameWithoutExtension(fileName string) string {
+	return fileName[:len(fileName)-len(filepath.Ext(fileName))]
+}
+
+func getHashedFileName(data []byte, fileName string) string {
+	fileHash := sha1.Sum(data)
+	hashString := hex.EncodeToString(fileHash[:])
+	return hashString + filepath.Ext(fileName)
+}
+
 type Data struct {
 	Markdown           template.HTML
 	Title              string
@@ -252,6 +298,8 @@ type Data struct {
 	CurrentNavPageHref string
 	LogoImageSrc       string
 	OGImageURL         string
+	MainCSSSrc         string
+	MarkdownCSSSrc     string
 	Favicon            bool
 }
 
