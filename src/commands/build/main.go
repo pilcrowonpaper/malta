@@ -22,12 +22,12 @@ import (
 )
 
 var config struct {
-	Name        string                 `json:"name"`
-	Description string                 `json:"description"`
-	Domain      string                 `json:"domain"`
-	Twitter     string                 `json:"twitter"`
-	Sidebar     []SidebarSectionConfig `json:"sidebar"`
-	Bundle      bool                   `json:"bundle"`
+	Name         string                 `json:"name"`
+	Description  string                 `json:"description"`
+	Domain       string                 `json:"domain"`
+	Twitter      string                 `json:"twitter"`
+	Sidebar      []SidebarSectionConfig `json:"sidebar"`
+	AssetHashing bool                   `json:"asset_hashing"`
 }
 
 var markdownFilePaths []string
@@ -103,15 +103,15 @@ func BuildCommand() int {
 
 	mainCSSFileName, markdownCSSFileName := "main.css", "markdown.css"
 
-	if config.Bundle && logoFileName != "" {
+	if config.AssetHashing && logoFileName != "" {
 		logoFileName = getHashedFileName(logoFile, logoFileName)
 	}
 
-	if config.Bundle && ogLogoFileName != "" {
+	if config.AssetHashing && ogLogoFileName != "" {
 		ogLogoFileName = getHashedFileName(ogLogoFile, ogLogoFileName)
 	}
 
-	if config.Bundle {
+	if config.AssetHashing {
 		mainCSSFileName = getHashedFileName(mainCSS, mainCSSFileName)
 		markdownCSSFileName = getHashedFileName(markdownCSS, markdownCSSFileName)
 	}

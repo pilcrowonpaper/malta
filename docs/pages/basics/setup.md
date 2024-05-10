@@ -31,13 +31,16 @@ Create `malta.config.json` in the project root.
 
     // optional
     "twitter": "@pilcrowonpaper", // twitter account associated with the project
-    "sidebar" [], // see 'Sidebar' page
-    "logo": "logo.svg", //for sidebar (must be the name of a file in the same dir)
-    "og_logo": "og_logo.png" // square image of OG (must be the name of a file in the same dir)
+    "sidebar": [], // see 'Sidebar' page
+    "asset_hashing": true // default: false - hashes the filenames for easy caching
 }
 ```
 
-You can also add a `favicon.ico` next to the config.
+You can also add the following files next to the config file:
+
+- `favicon.ico`
+- `logo.[EXTENSION]`: Adds logo to the sidebar
+- `og-logo.[EXTENSION]`: Square image for OG
 
 ## Create `pages` directory
 

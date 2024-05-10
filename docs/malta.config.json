@@ -3,6 +3,7 @@
   "description": "Malta is a CLI tool to generate documentation sites with markdown.",
   "domain": "https://malta.pilcrowonpaper.com",
   "twitter": "@pilcrowonpaper",
+  "asset_hashing": true,
   "sidebar": [
     {
       "title": "Basics",
