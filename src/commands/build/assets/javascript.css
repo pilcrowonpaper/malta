@@ -1,0 +1,27 @@
+code.js .c,
+code.js .c1 {
+    color: rgb(124, 124, 124);
+}
+
+code.js .s,
+code.js .s1,
+code.js .s2 {
+    color: rgb(75, 159, 58);
+}
+
+code.js .kr,
+code.js .k,
+code.js .kd,
+code.js .kc {
+    color: rgb(214, 55, 97);
+}
+
+code.js .kt {
+    color: rgb(53, 129, 211);
+}
+
+code.js .mi,
+code.js .mh,
+code.js .mf {
+    color: rgb(217, 153, 58);
+}

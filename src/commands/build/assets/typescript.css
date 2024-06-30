@@ -1,0 +1,27 @@
+code.ts .c,
+code.ts .c1 {
+    color: rgb(124, 124, 124);
+}
+
+code.ts .s,
+code.ts .s1,
+code.ts .s2 {
+    color: rgb(75, 159, 58);
+}
+
+code.ts .kr,
+code.ts .k,
+code.ts .kd,
+code.ts .kc {
+    color: rgb(214, 55, 97);
+}
+
+code.ts .kt {
+    color: rgb(53, 129, 211);
+}
+
+code.ts .mi,
+code.ts .mh,
+code.ts .mf {
+    color: rgb(217, 153, 58);
+}

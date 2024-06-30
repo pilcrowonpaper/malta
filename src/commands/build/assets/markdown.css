@@ -100,17 +100,6 @@ main .codeblock a {
     text-decoration: underline;
 }
 
-.codeblock .c,
-.codeblock .c1 {
-    color: rgb(124, 124, 124);
-}
-
-.codeblock .s,
-.codeblock .s1,
-.codeblock .s2 {
-    color: rgb(228, 69, 58);
-}
-
 main .table-wrapper {
     overflow: auto;
     width: 100%;

@@ -70,7 +70,7 @@ func (r codeBlockLinksRenderer) renderCustomCodeBlockLinks(w util.BufWriter, sou
 		}
 		target := strings.Replace(attributeName, "link:", "", 1)
 		content = strings.ReplaceAll(content, "$$"+target, "__MALTA_CODEBLOCK_LINK_"+target)
-
+		content = strings.ReplaceAll(content, "$\\$"+target, "$$"+target)
 	}
 	lexer := lexers.Get(string(codeBlock.Language(source)))
 	if lexer == nil {
@@ -102,9 +102,9 @@ func (r codeBlockLinksRenderer) renderCustomCodeBlockLinks(w util.BufWriter, sou
 		html = strings.ReplaceAll(html, "__MALTA_CODEBLOCK_LINK_"+target, fmt.Sprintf("<a href=\"%s\">%s</a>", dest, target))
 	}
 
-	w.WriteString("<pre class=\"codeblock\"><code>")
+	w.WriteString(fmt.Sprintf("<pre class=\"codeblock\"><code class=\"%s\">", string(codeBlock.Language(source))))
 	w.WriteString(html)
-	w.WriteString("</code></pre>")
+	w.WriteString("</code class=%s></pre>")
 
 	return ast.WalkContinue, nil
 }

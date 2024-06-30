@@ -26,8 +26,9 @@
   <link ref="icon" href="/favicon.ico" size="any">
   {{end}}
 
-  <link rel="stylesheet" href="{{.MainCSSSrc}}" />
-  <link rel="stylesheet" href="{{.MarkdownCSSSrc}}" />
+  {{range $stylesheet := .Stylesheets}}
+  <link rel="stylesheet" href="{{$stylesheet}}" />
+  {{end}}
 </head>
 
 <body>

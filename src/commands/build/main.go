@@ -3,12 +3,14 @@ package build
 import (
 	"bytes"
 	"crypto/sha1"
+	"embed"
 	_ "embed"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"html/template"
+	"io"
 	"os"
 	"path/filepath"
 	"strings"
@@ -40,6 +42,9 @@ var mainCSS []byte
 
 //go:embed assets/markdown.css
 var markdownCSS []byte
+
+//go:embed assets/*
+var embedded embed.FS
 
 func BuildCommand() int {
 	configJson, err := os.ReadFile("malta.config.json")
@@ -101,6 +106,26 @@ func BuildCommand() int {
 		}
 	}
 
+	cssAssets := []Asset{}
+	assetsEntries, _ := embedded.ReadDir("assets")
+	for _, entry := range assetsEntries {
+		if entry.IsDir() || filepath.Ext(entry.Name()) != ".css" {
+			continue
+		}
+		asset := Asset{}
+		asset.Filename = entry.Name()
+		if config.AssetHashing {
+			file, err := embedded.Open(filepath.Join("assets", asset.Filename))
+			if err != nil {
+				panic(err)
+			}
+			defer file.Close()
+			css, _ := io.ReadAll(file)
+			asset.OutputFileName = getHashedFileName(css, asset.Filename)
+		}
+		cssAssets = append(cssAssets, asset)
+	}
+
 	mainCSSFileName, markdownCSSFileName := "main.css", "markdown.css"
 
 	if config.AssetHashing && logoFileName != "" {
@@ -109,11 +134,6 @@ func BuildCommand() int {
 
 	if config.AssetHashing && ogLogoFileName != "" {
 		ogLogoFileName = getHashedFileName(ogLogoFile, ogLogoFileName)
-	}
-
-	if config.AssetHashing {
-		mainCSSFileName = getHashedFileName(mainCSS, mainCSSFileName)
-		markdownCSSFileName = getHashedFileName(markdownCSS, markdownCSSFileName)
 	}
 
 	navSections := []NavSection{}
@@ -150,6 +170,11 @@ func BuildCommand() int {
 	var favicon bool
 	if _, err := os.Stat("favicon.ico"); err == nil {
 		favicon = true
+	}
+
+	styleSheets := []string{}
+	for _, asset := range cssAssets {
+		styleSheets = append(styleSheets, "/"+asset.OutputFileName)
 	}
 
 	for _, markdownFilePath := range markdownFilePaths {
@@ -217,8 +242,7 @@ func BuildCommand() int {
 			LogoImageSrc:       logoImageSrc,
 			OGImageURL:         ogImageURL,
 			Favicon:            favicon,
-			MainCSSSrc:         "/" + mainCSSFileName,
-			MarkdownCSSSrc:     "/" + markdownCSSFileName,
+			Stylesheets:        styleSheets,
 		})
 		if err != nil {
 			panic(err)
@@ -230,23 +254,35 @@ func BuildCommand() int {
 		panic(err)
 	}
 	err = tmpl.Execute(notFoundDstHtmlFile, Data{
-		Markdown:       template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
-		Name:           config.Name,
-		Description:    config.Description,
-		Url:            config.Domain,
-		Twitter:        config.Twitter,
-		Title:          "Not found",
-		NavSections:    navSections,
-		LogoImageSrc:   logoImageSrc,
-		OGImageURL:     ogImageURL,
-		Favicon:        favicon,
-		MainCSSSrc:     "/" + mainCSSFileName,
-		MarkdownCSSSrc: "/" + markdownCSSFileName,
+		Markdown:     template.HTML("<h1>404 - Not found</h1><p>The page you were looking for does not exist.</p>"),
+		Name:         config.Name,
+		Description:  config.Description,
+		Url:          config.Domain,
+		Twitter:      config.Twitter,
+		Title:        "Not found",
+		NavSections:  navSections,
+		LogoImageSrc: logoImageSrc,
+		OGImageURL:   ogImageURL,
+		Favicon:      favicon,
+		Stylesheets:  styleSheets,
 	})
 	if err != nil {
 		panic(err)
 	}
 
+	for _, asset := range cssAssets {
+		src, err := embedded.Open(filepath.Join("assets", asset.Filename))
+		if err != nil {
+			panic(err)
+		}
+		defer src.Close()
+		dst, err := os.Create(filepath.Join("dist", asset.OutputFileName))
+		if err != nil {
+			panic(err)
+		}
+		defer dst.Close()
+		io.Copy(dst, src)
+	}
 	os.WriteFile(filepath.Join("dist", mainCSSFileName), mainCSS, os.ModePerm)
 	os.WriteFile(filepath.Join("dist", markdownCSSFileName), markdownCSS, os.ModePerm)
 	if logoFileName != "" {
@@ -298,8 +334,7 @@ type Data struct {
 	CurrentNavPageHref string
 	LogoImageSrc       string
 	OGImageURL         string
-	MainCSSSrc         string
-	MarkdownCSSSrc     string
+	Stylesheets        []string
 	Favicon            bool
 }
 
@@ -316,4 +351,9 @@ type NavPage struct {
 type SidebarSectionConfig struct {
 	Title string     `json:"title"`
 	Pages [][]string `json:"pages"`
+}
+
+type Asset struct {
+	Filename       string
+	OutputFileName string
 }
