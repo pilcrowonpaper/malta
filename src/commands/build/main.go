@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"crypto/sha1"
 	"embed"
-	_ "embed"
 	"encoding/hex"
 	"encoding/json"
 	"errors"
