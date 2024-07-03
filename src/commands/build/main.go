@@ -121,6 +121,8 @@ func BuildCommand() int {
 			defer file.Close()
 			css, _ := io.ReadAll(file)
 			asset.OutputFileName = getHashedFileName(css, asset.Filename)
+		} else {
+			asset.OutputFileName = asset.Filename
 		}
 		cssAssets = append(cssAssets, asset)
 	}
