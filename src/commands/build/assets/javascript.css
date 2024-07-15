@@ -25,3 +25,33 @@ code.js .mh,
 code.js .mf {
     color: rgb(217, 153, 58);
 }
+
+@media (prefers-color-scheme: dark) {
+    code.js .kr,
+    code.js .k,
+    code.js .kd,
+    code.js .kc {
+        color: rgb(217, 69, 108);
+    }
+
+    code.js .s,
+    code.js .s1,
+    code.js .s2 {
+        color: rgb(103, 179, 88);
+    }
+
+    code.js .c,
+    code.js .c1 {
+        color: rgb(109, 109, 109);
+    }
+
+    code.js .mi,
+    code.js .mh,
+    code.js .mf {
+        color: rgb(232, 167, 69);
+    }
+
+    code.js .kt {
+        color: rgb(82, 153, 228);
+    }
+}

@@ -21,7 +21,7 @@ main h2 {
     margin-bottom: 0;
 }
 
-main :not(h1)+h2 {
+main :not(h1) + h2 {
     margin-top: 3rem;
 }
 
@@ -33,7 +33,7 @@ main h3 {
     margin-bottom: 0;
 }
 
-main>p {
+main > p {
     margin-top: 1rem;
     margin-bottom: 0;
 }
@@ -47,7 +47,7 @@ main a:hover {
     text-decoration: underline;
 }
 
-main>ul {
+main > ul {
     margin-top: 1rem;
     margin-bottom: 0;
     list-style-type: disc;
@@ -55,7 +55,7 @@ main>ul {
     padding-left: 0;
 }
 
-main>ol {
+main > ol {
     margin-top: 1rem;
     margin-bottom: 0;
     list-style-type: decimal;
@@ -63,7 +63,7 @@ main>ol {
     padding-left: 0;
 }
 
-main ul>li>ul {
+main ul > li > ul {
     margin-top: 0;
     margin-bottom: 0;
     padding-left: 1.5rem;
@@ -71,7 +71,7 @@ main ul>li>ul {
     list-style-position: inside;
 }
 
-main ol>li>ol {
+main ol > li > ol {
     margin-top: 0;
     margin-bottom: 0;
     padding-left: 1.5rem;
@@ -93,6 +93,13 @@ main .codeblock {
     padding: 1rem;
     line-height: 1.375;
     overflow: auto;
+}
+
+@media (prefers-color-scheme: dark) {
+    main .codeblock {
+        background-color: rgb(28, 28, 30);
+        border: 1px solid rgb(43, 43, 45);
+    }
 }
 
 main .codeblock a {
@@ -139,6 +146,16 @@ main th {
     border-bottom: 1px solid rgb(44, 44, 44);
 }
 
+@media (prefers-color-scheme: dark) {
+    main td {
+        border-bottom: 1px solid rgb(46, 46, 46);
+    }
+    
+    main th {
+        border-bottom: 1px solid rgb(193, 193, 193);
+    }
+}
+
 main blockquote {
     margin: 0;
     margin-top: 1rem;
@@ -147,6 +164,13 @@ main blockquote {
     color: rgb(150, 150, 150);
 }
 
-main blockquote>p {
+@media (prefers-color-scheme: dark) {
+    main blockquote {
+        border-left: 2px solid rgb(120, 120, 120);
+        color: rgb(120, 120, 120);
+    }
+}
+
+main blockquote > p {
     margin: 0;
 }

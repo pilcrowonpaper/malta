@@ -43,13 +43,34 @@
         <button id="toggle-mobile-menu-button" class="h-8 w-8 rounded p-2 lg:hidden" aria-label="Toggle menu">
           <svg id="toggle-mobile-menu-button-menu-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
             fill="none" viewBox="0 0 17 14">
-            <path stroke="#2c2c2c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="M1 1h15M1 7h15M1 13h15"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"></path>
+            <style type="text/css">
+              path {
+                stroke: #2c2c2c;
+              }
+
+              @media (prefers-color-scheme: dark) {
+                path {
+                  stroke: rgb(191, 191, 191);
+                }
+              }
+            </style>
           </svg>
           <svg id="toggle-mobile-menu-button-close-icon" class="hidden" aria-hidden="true"
             xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
-            <path stroke="#2c2c2c" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-              d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6">
+            </path>
+            <style type="text/css">
+              path {
+                stroke: #2c2c2c;
+              }
+
+              @media (prefers-color-scheme: dark) {
+                path {
+                  stroke: rgb(191, 191, 191);
+                }
+              }
+            </style>
           </svg>
         </button>
       </header>
