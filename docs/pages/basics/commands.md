@@ -26,4 +26,4 @@ malta preview --port 5000
 
 ### Options
 
-- `--port` (`-p`): Localhost port (number - `3000` by default)
+-   `--port` (`-p`): Localhost port (number - `3000` by default)

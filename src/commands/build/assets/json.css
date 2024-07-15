@@ -22,3 +22,30 @@ code.json .mf {
 code.json .kc {
     color: rgb(53, 129, 211);
 }
+
+@media (prefers-color-scheme: dark) {
+    code.json .nt {
+        color: rgb(217, 69, 108);
+    }
+
+    code.json .s,
+    code.json .s1,
+    code.json .s2 {
+        color: rgb(103, 179, 88);
+    }
+
+    code.json .c,
+    code.json .c1 {
+        color: rgb(109, 109, 109);
+    }
+
+    code.json .mi,
+    code.json .mh,
+    code.json .mf {
+        color: rgb(232, 167, 69);
+    }
+
+    code.json .kc {
+        color: rgb(82, 153, 228);
+    }
+}

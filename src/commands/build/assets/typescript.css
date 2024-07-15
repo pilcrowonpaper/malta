@@ -25,3 +25,33 @@ code.ts .mh,
 code.ts .mf {
     color: rgb(217, 153, 58);
 }
+
+@media (prefers-color-scheme: dark) {
+    code.ts .kr,
+    code.ts .k,
+    code.ts .kd,
+    code.ts .kc {
+        color: rgb(217, 69, 108);
+    }
+
+    code.ts .s,
+    code.ts .s1,
+    code.ts .s2 {
+        color: rgb(103, 179, 88);
+    }
+
+    code.ts .c,
+    code.ts .c1 {
+        color: rgb(109, 109, 109);
+    }
+
+    code.ts .mi,
+    code.ts .mh,
+    code.ts .mf {
+        color: rgb(232, 167, 69);
+    }
+
+    code.ts .kt {
+        color: rgb(82, 153, 228);
+    }
+}
