@@ -10,6 +10,7 @@ import (
 	"fmt"
 	"html/template"
 	"io"
+	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -33,19 +34,23 @@ var config struct {
 
 var markdownFilePaths []string
 
-//go:embed assets/template.html
-var htmlTemplate []byte
-
-//go:embed assets/main.css
-var mainCSS []byte
-
-//go:embed assets/markdown.css
-var markdownCSS []byte
-
 //go:embed assets/*
 var embedded embed.FS
 
 func BuildCommand() int {
+	htmlTemplate, err := embedded.ReadFile("assets/template.html")
+	if err != nil {
+		log.Fatal("template.html does not exist")
+	}
+	mainCSS, err := embedded.ReadFile("assets/main.css")
+	if err != nil {
+		log.Fatal("main.css does not exist")
+	}
+	markdownCSS, err := embedded.ReadFile("assets/markdown.css")
+	if err != nil {
+		log.Fatal("markdown.css does not exist")
+	}
+
 	configJson, err := os.ReadFile("malta.config.json")
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
