@@ -134,10 +134,13 @@ func BuildCommand() int {
 
 	mainCSSFileName, markdownCSSFileName := "main.css", "markdown.css"
 
+	if config.AssetHashing {
+		mainCSSFileName = getHashedFileName(mainCSS, mainCSSFileName)
+		markdownCSSFileName = getHashedFileName(markdownCSS, markdownCSSFileName)
+	}
 	if config.AssetHashing && logoFileName != "" {
 		logoFileName = getHashedFileName(logoFile, logoFileName)
 	}
-
 	if config.AssetHashing && ogLogoFileName != "" {
 		ogLogoFileName = getHashedFileName(ogLogoFile, ogLogoFileName)
 	}
