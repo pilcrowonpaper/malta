@@ -8,6 +8,15 @@ title: "Getting started"
 
 Binaries for MacOS, Linux, and Windows are available from [GitHub releases](https://github.com/pilcrowOnPaper/malta/releases/latest).
 
+```
+https://github.com/pilcrowonpaper/malta/releases/latest/download/darwin-amd64.tgz
+https://github.com/pilcrowonpaper/malta/releases/latest/download/darwin-arm64.tgz
+https://github.com/pilcrowonpaper/malta/releases/latest/download/linux-amd64.tgz
+https://github.com/pilcrowonpaper/malta/releases/latest/download/linux-arm64.tgz
+https://github.com/pilcrowonpaper/malta/releases/latest/download/windows-386.tgz
+https://github.com/pilcrowonpaper/malta/releases/latest/download/windows-amd64.tgz
+```
+
 For MacOS/Linux, you can install it with the following commands:
 
 ```
