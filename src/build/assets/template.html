@@ -1,0 +1,154 @@
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <meta name="generator" content="custom" />
+  <title>{{.Title}}</title>
+  <meta name="description" content="{{.Description}}" />
+
+  <meta name="twitter:card" content="summary" />
+  {{if ne .Twitter ""}}
+  <meta name="twitter:site" content="{{.Twitter}}" />
+  {{end}}
+  <meta name="twitter:title" content="{{.Title}}" />
+  <meta name="twitter:description" content="{{.Description}}" />
+
+  <meta property="og:site_name" content="{{.Name}}" />
+  <meta property="og:title" content="{{.Title}}" />
+  <meta property="og:url" content="{{.Url}}" />
+  <meta property="og:description" content="{{.Description}}" />
+  {{if ne .OGImageURL ""}}
+  <meta property="og:image" content="{{.OGImageURL}}" />
+  {{end}}
+
+  {{if ne .FaviconHref ""}}
+  <link ref="icon" href="{{.FaviconHref}}" size="any">
+  {{end}}
+
+  {{range $stylesheet := .Stylesheets}}
+  <link rel="stylesheet" href="{{$stylesheet}}" />
+  {{end}}
+</head>
+
+<body>
+  <div id="mobile-top">
+    <div id="mobile-top-container">
+      <header id="mobile-header">
+        {{if ne .LogoImageSrc ""}}
+        <a href="/"><img id="mobile-header-logo" src="{{.LogoImageSrc}}" /></a>
+        {{else}}
+        <a href="/" id="mobile-header-title">{{.Name}}</a>
+        {{end}}
+        <button id="toggle-mobile-menu-button" class="h-8 w-8 rounded p-2 lg:hidden" aria-label="Toggle menu">
+          <svg id="toggle-mobile-menu-button-menu-icon" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+            fill="none" viewBox="0 0 17 14">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"></path>
+            <style type="text/css">
+              path {
+                stroke: #2c2c2c;
+              }
+
+              @media (prefers-color-scheme: dark) {
+                path {
+                  stroke: rgb(191, 191, 191);
+                }
+              }
+            </style>
+          </svg>
+          <svg id="toggle-mobile-menu-button-close-icon" class="hidden" aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6">
+            </path>
+            <style type="text/css">
+              path {
+                stroke: #2c2c2c;
+              }
+
+              @media (prefers-color-scheme: dark) {
+                path {
+                  stroke: rgb(191, 191, 191);
+                }
+              }
+            </style>
+          </svg>
+        </button>
+      </header>
+      <nav id="mobile-menu-nav" class="hidden">
+        {{range $section := .NavSections}}
+        <section>
+          <h2 class="nav-section-title">{{$section.Title}}</h2>
+          <ul class="nav-section-links-list">
+            {{range $page := $section.Pages}}
+            <li class="nav-section-links-list-item">
+              {{if eq $.CurrentNavPageHref $page.Href}}
+              <a href="{{$page.Href}}" class="current-nav-section-link">{{$page.Title}}</a>
+              {{else}}
+              <a href="{{$page.Href}}" class="nav-section-link">{{$page.Title}}</a>
+              {{end}}
+            </li>
+            {{end}}
+          </ul>
+        </section>
+        {{end}}
+      </nav>
+    </div>
+  </div>
+  <div id="content">
+    <div id="content-container">
+      <aside id="sidebar">
+        {{if ne .LogoImageSrc ""}}
+        <a href="/"><img id="sidebar-logo" src="{{.LogoImageSrc}}" /></a>
+        {{else}}
+        <a href="/" id="sidebar-title">{{.Name}}</a>
+        {{end}}
+        <nav id="sidebar-nav">
+          {{range $section := .NavSections}}
+          <section>
+            <h2 class="nav-section-title">{{$section.Title}}</h2>
+            <ul class="nav-section-links-list">
+              {{range $page := $section.Pages}}
+              <li class="nav-section-links-list-item">
+                {{if eq $.CurrentNavPageHref $page.Href}}
+                <a href="{{$page.Href}}" class="current-nav-section-link">{{$page.Title}}</a>
+                {{else}}
+                <a href="{{$page.Href}}" class="nav-section-link">{{$page.Title}}</a>
+                {{end}}
+              </li>
+              {{end}}
+            </ul>
+          </section>
+          {{end}}
+        </nav>
+      </aside>
+      <main>{{.Markdown}}</main>
+    </div>
+  </div>
+</body>
+
+</html>
+
+<script>
+  document
+    .getElementById("toggle-mobile-menu-button")
+    .addEventListener("click", (e) => {
+      const mobileMenuNav = document.getElementById("mobile-menu-nav");
+      if (mobileMenuNav.classList.contains("hidden")) {
+        mobileMenuNav.classList.remove("hidden");
+        document
+          .getElementById("toggle-mobile-menu-button-close-icon")
+          .classList.remove("hidden");
+        document
+          .getElementById("toggle-mobile-menu-button-menu-icon")
+          .classList.add("hidden");
+      } else {
+        mobileMenuNav.classList.add("hidden");
+        document
+          .getElementById("toggle-mobile-menu-button-close-icon")
+          .classList.add("hidden");
+        document
+          .getElementById("toggle-mobile-menu-button-menu-icon")
+          .classList.remove("hidden");
+      }
+    });
+</script>

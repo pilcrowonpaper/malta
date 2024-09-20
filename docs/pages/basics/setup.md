@@ -20,7 +20,7 @@ install <platform>-<arch>/malta /usr/local/bin
 
 ## Create a config file
 
-Create `malta.config.json` in the project root. 
+Create `malta.config.json` in the project root.
 
 ```json
 {
@@ -38,9 +38,9 @@ Create `malta.config.json` in the project root.
 
 You can also add the following files next to the config file:
 
-- `favicon.ico`
-- `logo.[EXTENSION]`: Adds logo to the sidebar
-- `og-logo.[EXTENSION]`: Square image for OG
+-   `favicon.ico`
+-   `logo.[EXTENSION]`: Adds logo to the sidebar
+-   `og-logo.[EXTENSION]`: Square image for OG
 
 ## Create `pages` directory
 
@@ -56,9 +56,17 @@ title: "My documentation site"
 Welcome to my documentation site.
 ```
 
+## Preview HTML
+
+Run the `dev` command to preview your site. Pages are rendered on demand.
+
+```
+malta dev
+```
+
 ## Generate HTML
 
-Run the `build` command to generate HTML files in the `dist` directory, and the `preview` to preview your site at port 3000 (default)
+Run the `build` command to generate HTML files in the `dist` directory, and the `preview` command to check your generated site at port 3000 (default)
 
 ```
 malta build

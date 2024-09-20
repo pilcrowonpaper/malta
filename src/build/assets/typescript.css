@@ -1,0 +1,83 @@
+code.ts .c,
+code.ts .c1,
+code.tsx .c,
+code.tsx .c1 {
+    color: rgb(124, 124, 124);
+}
+
+code.ts .s,
+code.ts .s1,
+code.ts .s2,
+code.tsx .s,
+code.tsx .s1,
+code.tsx .s2 {
+    color: rgb(75, 159, 58);
+}
+
+code.ts .kr,
+code.ts .k,
+code.ts .kd,
+code.ts .kc,
+code.tsx .kr,
+code.tsx .k,
+code.tsx .kd,
+code.tsx .kc {
+    color: rgb(214, 55, 97);
+}
+
+code.ts .kt,
+code.tsx .kt {
+    color: rgb(53, 129, 211);
+}
+
+code.ts .mi,
+code.ts .mh,
+code.ts .mf,
+code.tsx .mi,
+code.tsx .mh,
+code.tsx .mf {
+    color: rgb(217, 153, 58);
+}
+
+@media (prefers-color-scheme: dark) {
+    code.ts .kr,
+    code.ts .k,
+    code.ts .kd,
+    code.ts .kc,
+    code.tsx .kr,
+    code.tsx .k,
+    code.tsx .kd,
+    code.tsx .kc {
+        color: rgb(217, 69, 108);
+    }
+
+    code.ts .s,
+    code.ts .s1,
+    code.ts .s2,
+    code.tsx .s,
+    code.tsx .s1,
+    code.tsx .s2 {
+        color: rgb(103, 179, 88);
+    }
+
+    code.ts .c,
+    code.ts .c1,
+    code.tsx .c,
+    code.tsx .c1 {
+        color: rgb(109, 109, 109);
+    }
+
+    code.ts .mi,
+    code.ts .mh,
+    code.ts .mf,
+    code.tsx .mi,
+    code.tsx .mh,
+    code.tsx .mf {
+        color: rgb(232, 167, 69);
+    }
+
+    code.ts .kt,
+    code.tsx .kt {
+        color: rgb(82, 153, 228);
+    }
+}

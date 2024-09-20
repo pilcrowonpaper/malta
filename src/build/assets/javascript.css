@@ -1,0 +1,83 @@
+code.js .c,
+code.js .c1,
+code.jsx .c,
+code.jsx .c1 {
+    color: rgb(124, 124, 124);
+}
+
+code.js .s,
+code.js .s1,
+code.js .s2,
+code.jsx .s,
+code.jsx .s1,
+code.jsx .s2 {
+    color: rgb(75, 159, 58);
+}
+
+code.js .kr,
+code.js .k,
+code.js .kd,
+code.js .kc,
+code.jsx .kr,
+code.jsx .k,
+code.jsx .kd,
+code.jsx .kc {
+    color: rgb(214, 55, 97);
+}
+
+code.js .kt,
+code.jsx .kt {
+    color: rgb(53, 129, 211);
+}
+
+code.js .mi,
+code.js .mh,
+code.js .mf,
+code.jsx .mi,
+code.jsx .mh,
+code.jsx .mf {
+    color: rgb(217, 153, 58);
+}
+
+@media (prefers-color-scheme: dark) {
+    code.js .kr,
+    code.js .k,
+    code.js .kd,
+    code.js .kc,
+    code.jsx .kr,
+    code.jsx .k,
+    code.jsx .kd,
+    code.jsx .kc {
+        color: rgb(217, 69, 108);
+    }
+
+    code.js .s,
+    code.js .s1,
+    code.js .s2,
+    code.jsx .s,
+    code.jsx .s1,
+    code.jsx .s2 {
+        color: rgb(103, 179, 88);
+    }
+
+    code.js .c,
+    code.js .c1,
+    code.jsx .c,
+    code.jsx .c1 {
+        color: rgb(109, 109, 109);
+    }
+
+    code.js .mi,
+    code.js .mh,
+    code.js .mf,
+    code.jsx .mi,
+    code.jsx .mh,
+    code.jsx .mf {
+        color: rgb(232, 167, 69);
+    }
+
+    code.js .kt,
+    code.jsx .kt {
+        color: rgb(82, 153, 228);
+    }
+}
