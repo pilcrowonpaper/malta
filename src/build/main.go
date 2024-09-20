@@ -328,6 +328,9 @@ func matchClosestPage(sections []NavSection, target string) (string, bool) {
 	targetParts := ParseURLPath(target)
 	for _, section := range sections {
 		for _, page := range section.Pages {
+			if target == page.Href {
+				return page.Href, true
+			}
 			if !strings.HasPrefix(page.Href, "/") {
 				continue
 			}
