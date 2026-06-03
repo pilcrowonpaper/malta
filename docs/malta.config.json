@@ -17,9 +17,7 @@
 		},
 		{
 			"title": "Guides",
-			"pages": [
-				["Deploying with GitHub Actions", "/guides/github-actions"]
-			]
+			"pages": [["Deploying with GitHub Actions", "/guides/github-actions"]]
 		},
 		{
 			"title": "Links",
