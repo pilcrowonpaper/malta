@@ -6,7 +6,7 @@ title: "Getting started"
 
 ## Installation
 
-Binaries for MacOS, Linux, and Windows are available from [GitHub releases](https://github.com/pilcrowOnPaper/malta/releases/latest).
+Binaries for MacOS, Linux, and Windows are available from [GitHub releases](https://github.com/pilcrowonpaper/malta/releases/latest).
 
 ```
 https://github.com/pilcrowonpaper/malta/releases/latest/download/darwin-amd64.tgz
