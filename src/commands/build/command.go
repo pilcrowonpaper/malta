@@ -2,9 +2,7 @@ package build
 
 import (
 	"crypto/sha1"
-	"embed"
 	"encoding/hex"
-	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
@@ -12,51 +10,22 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/pilcrowOnPaper/malta/build"
-	"github.com/pilcrowOnPaper/malta/utils"
-	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/extension"
-	"github.com/yuin/goldmark/parser"
-	"github.com/yuin/goldmark/renderer"
-	"github.com/yuin/goldmark/util"
+	"github.com/pilcrowonpaper/malta/assets"
+	"github.com/pilcrowonpaper/malta/build"
+	"github.com/pilcrowonpaper/malta/project"
+	"github.com/pilcrowonpaper/malta/utils"
 )
-
-var config struct {
-	Name         string                 `json:"name"`
-	Description  string                 `json:"description"`
-	Domain       string                 `json:"domain"`
-	Twitter      string                 `json:"twitter"`
-	Sidebar      []SidebarSectionConfig `json:"sidebar"`
-	AssetHashing bool                   `json:"asset_hashing"`
-}
 
 var markdownFilePaths []string
 
-//go:embed assets/*
-var embedded embed.FS
-
 func BuildCommand() int {
-	configJson, err := os.ReadFile("malta.config.json")
+	config, err := project.ParseConfigFile()
 	if err != nil {
 		if errors.Is(err, os.ErrNotExist) {
-			fmt.Println("Missing 'malta.config.json'")
+			fmt.Println("Missing or invalid 'malta.config.json'")
 			return 1
 		}
 		fmt.Println(err)
-		return 1
-	}
-
-	json.Unmarshal(configJson, &config)
-	if config.Name == "" {
-		fmt.Println("Missing config: name")
-		return 1
-	}
-	if config.Domain == "" {
-		fmt.Println("Missing config: domain")
-		return 1
-	}
-	if config.Description == "" {
-		fmt.Println("Missing config: description")
 		return 1
 	}
 
@@ -100,7 +69,7 @@ func BuildCommand() int {
 	}
 
 	cssAssets := []Asset{}
-	assetFilenames, _ := build.GetAssetFilenames()
+	assetFilenames, _ := assets.GetFilenames()
 	for _, assetFilename := range assetFilenames {
 		if filepath.Ext(assetFilename) != ".css" {
 			continue
@@ -109,7 +78,7 @@ func BuildCommand() int {
 			Filename: assetFilename,
 		}
 		if config.AssetHashing {
-			file, err := embedded.Open(filepath.Join("assets", asset.Filename))
+			file, err := assets.GetFile(asset.Filename)
 			if err != nil {
 				fmt.Println(err)
 				return 1
@@ -130,24 +99,10 @@ func BuildCommand() int {
 		ogLogoFilename = getHashedFilename(ogLogoFile, ogLogoFilename)
 	}
 
-	navSections := []build.NavSection{}
-	for _, sidebarSection := range config.Sidebar {
-		navSection := build.NavSection{Title: sidebarSection.Title, Pages: []build.NavPage{}}
-		for _, sidebarSectionPage := range sidebarSection.Pages {
-			navPage := build.NavPage{Title: sidebarSectionPage[0], Href: sidebarSectionPage[1]}
-			navSection.Pages = append(navSection.Pages, navPage)
-		}
-		navSections = append(navSections, navSection)
-	}
-
 	if err := filepath.Walk("pages", walkPagesDir); err != nil {
 		fmt.Println(err)
 		return 1
 	}
-
-	markdown := goldmark.New(goldmark.WithExtensions(extension.Table))
-	markdown.Parser().AddOptions(parser.WithASTTransformers(util.Prioritized(&codeBlockLinksAstTransformer{}, 500)), parser.WithAutoHeadingID())
-	markdown.Renderer().AddOptions(renderer.WithNodeRenderers(util.Prioritized(&codeBlockLinksRenderer{}, 100)))
 
 	os.RemoveAll("dist")
 
@@ -161,9 +116,9 @@ func BuildCommand() int {
 		styleSheetFilenames = append(styleSheetFilenames, asset.OutputFilename)
 	}
 
-	builder := build.NewBuilder(config.Name, config.Description, config.Domain, navSections, styleSheetFilenames)
-	if config.Twitter != "" {
-		builder.SetSiteTwitterHandle(config.Twitter)
+	builder := build.NewBuilder(config.Name, config.Description, config.Domain, config.NavSections, styleSheetFilenames)
+	if config.TwitterHandle != "" {
+		builder.SetSiteTwitterHandle(config.TwitterHandle)
 	}
 	if favicon {
 		builder.IncludeFavicon()
@@ -173,6 +128,9 @@ func BuildCommand() int {
 	}
 	if logoFilename != "" {
 		builder.SetLogoFile(logoFilename)
+	}
+	if config.Alert != nil {
+		builder.SetAlert(*config.Alert)
 	}
 
 	for _, markdownFilePath := range markdownFilePaths {
@@ -219,7 +177,7 @@ func BuildCommand() int {
 	}
 
 	for _, asset := range cssAssets {
-		src, err := embedded.Open(filepath.Join("assets", asset.Filename))
+		src, err := assets.GetFile(asset.Filename)
 		if err != nil {
 			fmt.Println(err)
 			return 1

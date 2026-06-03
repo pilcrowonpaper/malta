@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/pilcrowOnPaper/malta/commands/build"
-	"github.com/pilcrowOnPaper/malta/commands/dev"
-	"github.com/pilcrowOnPaper/malta/commands/preview"
+	"github.com/pilcrowonpaper/malta/commands/build"
+	"github.com/pilcrowonpaper/malta/commands/dev"
+	"github.com/pilcrowonpaper/malta/commands/preview"
 )
 
 func main() {

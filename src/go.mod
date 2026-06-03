@@ -1,4 +1,4 @@
-module github.com/pilcrowOnPaper/malta
+module github.com/pilcrowonpaper/malta
 
 go 1.21.3
 
