@@ -15,7 +15,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/pilcrowOnPaper/malta/build"
+	"github.com/pilcrowonpaper/malta/assets"
+	"github.com/pilcrowonpaper/malta/build"
+	"github.com/pilcrowonpaper/malta/project"
 )
 
 func DevCommand() int {
@@ -35,12 +37,12 @@ func DevCommand() int {
 	}
 
 	http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-		config, err := build.ParseConfigFile()
+		config, err := project.ParseConfigFile()
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		assetFilenames, err := build.GetAssetFilenames()
+		assetFilenames, err := assets.GetFilenames()
 		if err != nil {
 			log.Fatal(err)
 		}
@@ -57,21 +59,25 @@ func DevCommand() int {
 			builder.SetSiteTwitterHandle(config.TwitterHandle)
 		}
 
-		ogFilename, err := build.GetOGImageFilename()
+		if config.Alert != nil {
+			builder.SetAlert(*config.Alert)
+		}
+
+		ogFilename, err := project.GetOGImageFilename()
 		if err == nil {
 			builder.SetOGImage(ogFilename)
 		} else if !errors.Is(err, fs.ErrNotExist) {
 			log.Fatal(err)
 		}
 
-		logoFilename, err := build.GetLogoFilename()
+		logoFilename, err := project.GetLogoFilename()
 		if err == nil {
 			builder.SetLogoFile(logoFilename)
 		} else if !errors.Is(err, fs.ErrNotExist) {
 			log.Fatal(err)
 		}
 
-		favicon, err := build.GetFaviconFile()
+		favicon, err := project.GetFaviconFile()
 		if err != nil {
 			builder.IncludeFavicon()
 		} else if !errors.Is(err, fs.ErrNotExist) {
@@ -114,7 +120,7 @@ func DevCommand() int {
 				builder.Generate404HTML(w)
 				return
 			}
-			asset, err := build.GetAsset(filepath.Base(req.URL.Path))
+			asset, err := assets.GetFile(filepath.Base(req.URL.Path))
 			if errors.Is(err, fs.ErrNotExist) {
 				w.Header().Set("Content-Type", "text/html; charset=utf-8")
 				w.WriteHeader(404)
